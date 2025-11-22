@@ -1,0 +1,487 @@
+// Alchemy by Arkane - Database Schema
+// Multi-Brand AI Content Platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USER & AUTHENTICATION
+// ============================================
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  avatarUrl String?  @map("avatar_url")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  brands        Brand[]
+  ideas         Idea[]
+  contentQueue  ContentQueue[]
+  publications  Publication[]
+
+  @@map("users")
+}
+
+// ============================================
+// MULTI-BRAND ARCHITECTURE
+// ============================================
+
+model Brand {
+  id          String  @id @default(uuid())
+  userId      String  @map("user_id")
+
+  // Brand Identity
+  name        String
+  slug        String  @unique
+  description String? @db.Text
+  logoUrl     String? @map("logo_url")
+  websiteUrl  String? @map("website_url")
+
+  // Brand Voice Configuration
+  brandVoice  Json?   @map("brand_voice")
+  // Structure: {
+  //   tone: "professional" | "casual" | "friendly" | "authoritative" | "playful"
+  //   formality: "formal" | "informal" | "conversational"
+  //   personality: string[]
+  //   vocabulary: { preferred: string[], avoid: string[] }
+  //   writingStyle: "concise" | "detailed" | "storytelling"
+  // }
+
+  // Target Audience
+  targetAudience Json? @map("target_audience")
+  // Structure: {
+  //   demographics: { age: string, location: string[], profession: string[] }
+  //   psychographics: { interests: string[], painPoints: string[], goals: string[] }
+  //   expertise: "beginner" | "intermediate" | "expert"
+  // }
+
+  // Content Preferences
+  contentPreferences Json? @map("content_preferences")
+  // Structure: {
+  //   contentTypes: string[]  // "blog", "social", "video", "email"
+  //   platforms: string[]     // "linkedin", "twitter", "youtube"
+  //   toneGuidelines: string
+  //   styleGuide: string
+  //   keywords: string[]
+  //   prohibitedTopics: string[]
+  // }
+
+  // Settings
+  isDefault   Boolean @default(false) @map("is_default")
+  isActive    Boolean @default(true) @map("is_active")
+
+  // Timestamps
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ideas           Idea[]
+  contentQueue    ContentQueue[]
+  generatedContent GeneratedContent[]
+  publications    Publication[]
+
+  @@index([userId])
+  @@index([slug])
+  @@map("brands")
+}
+
+// ============================================
+// CONTENT IDEAS & RESEARCH
+// ============================================
+
+model Idea {
+  id              String   @id @default(uuid())
+  userId          String   @map("user_id")
+  brandId         String?  @map("brand_id")
+
+  // Content
+  title           String
+  description     String?  @db.Text
+  keywords        String[]
+
+  // Source & Discovery
+  source          String   // "manual", "reddit", "youtube", "twitter", "firecrawl"
+  sourceUrl       String?  @map("source_url")
+  sourceData      Json?    @map("source_data")
+
+  // Classification
+  targetPlatforms String[] @map("target_platforms") // ["blog", "youtube", "linkedin"]
+  contentType     String   @map("content_type")     // "how-to", "listicle", "case-study"
+  targetAudience  String?  @map("target_audience")
+
+  // Scoring & Metrics
+  viralityScore   Float?   @map("virality_score")
+  relevanceScore  Float?   @map("relevance_score")
+  competitionScore Float?  @map("competition_score")
+  overallScore    Float?   @map("overall_score")
+
+  // SEO Data
+  seoData         Json?    @map("seo_data")
+  // Structure: {
+  //   keywords: [{ keyword: string, volume: number, difficulty: number }]
+  //   relatedQueries: string[]
+  //   trendData: object
+  // }
+
+  // Status & Priority
+  priority        String   @default("medium") // "low", "medium", "high"
+  status          String   @default("new")    // "new", "researching", "queued", "in_production", "published", "archived"
+  notes           String?  @db.Text
+
+  // Timestamps
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brand           Brand?          @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  contentQueue    ContentQueue[]
+
+  @@index([userId, status])
+  @@index([brandId])
+  @@index([source])
+  @@index([status])
+  @@map("ideas")
+}
+
+// ============================================
+// CONTENT PRODUCTION QUEUE
+// ============================================
+
+model ContentQueue {
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  brandId         String?   @map("brand_id")
+  ideaId          String?   @map("idea_id")
+
+  // Job Configuration
+  jobId           String?   @unique @map("job_id") // BullMQ job ID
+  platform        String    // "blog", "youtube", "linkedin", "twitter"
+  contentType     String    @map("content_type") // "blog_post", "video_script", "social_post"
+
+  // Generation Settings
+  generationConfig Json?    @map("generation_config")
+  // Structure: {
+  //   aiModel: "claude-sonnet-4.5" | "gpt-4"
+  //   temperature: number
+  //   maxTokens: number
+  //   customPrompt: string
+  // }
+
+  // Status Tracking
+  status          String    @default("queued") // "queued", "processing", "review", "approved", "failed"
+  progress        Float?    @default(0)        // 0-100
+  errorMessage    String?   @map("error_message") @db.Text
+
+  // Content Brief (pre-generation)
+  brief           Json?
+  // Structure: {
+  //   outline: string[]
+  //   keyPoints: string[]
+  //   research: object
+  //   targetWordCount: number
+  // }
+
+  // Publishing Schedule
+  scheduledFor    DateTime? @map("scheduled_for")
+
+  // Timestamps
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relationships
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brand           Brand?              @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  idea            Idea?               @relation(fields: [ideaId], references: [id], onDelete: SetNull)
+  generatedContent GeneratedContent[]
+
+  @@index([userId, status])
+  @@index([brandId])
+  @@index([status])
+  @@index([scheduledFor])
+  @@map("content_queue")
+}
+
+// ============================================
+// GENERATED CONTENT
+// ============================================
+
+model GeneratedContent {
+  id              String   @id @default(uuid())
+  queueId         String   @map("queue_id")
+  userId          String   @map("user_id")
+  brandId         String?  @map("brand_id")
+
+  // Content
+  contentType     String   @map("content_type") // "blog_post", "video_script", "social_post", "email"
+  platform        String
+  title           String?
+  body            String?  @db.Text
+  excerpt         String?  @db.Text
+
+  // Metadata
+  metadata        Json?
+  // Structure: {
+  //   wordCount: number
+  //   readingTime: number
+  //   tags: string[]
+  //   categories: string[]
+  // }
+
+  // SEO
+  seoData         Json?    @map("seo_data")
+  // Structure: {
+  //   metaTitle: string
+  //   metaDescription: string
+  //   slug: string
+  //   focusKeyword: string
+  //   titleVariations: string[]
+  // }
+
+  // Media
+  mediaAssets     String[] @map("media_assets") // Array of media IDs
+
+  // AI Tracking
+  aiMetadata      Json?    @map("ai_metadata")
+  // Structure: {
+  //   model: string
+  //   tokensUsed: number
+  //   cost: number
+  //   parameters: object
+  //   generatedAt: string
+  // }
+
+  // Versions
+  version         Int      @default(1)
+  parentId        String?  @map("parent_id")
+
+  // Status
+  status          String   @default("draft") // "draft", "review", "approved", "published"
+
+  // Quality Scores
+  qualityScore    Float?   @map("quality_score")
+  readabilityScore Float?  @map("readability_score")
+  seoScore        Float?   @map("seo_score")
+
+  // Timestamps
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  queue           ContentQueue  @relation(fields: [queueId], references: [id], onDelete: Cascade)
+  brand           Brand?        @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  publications    Publication[]
+
+  @@index([queueId])
+  @@index([brandId])
+  @@index([userId, status])
+  @@index([platform, status])
+  @@map("generated_content")
+}
+
+// ============================================
+// MEDIA LIBRARY
+// ============================================
+
+model Media {
+  id              String   @id @default(uuid())
+  userId          String   @map("user_id")
+  brandId         String?  @map("brand_id")
+
+  // File Information
+  type            String   // "image", "video", "audio"
+  url             String
+  thumbnailUrl    String?  @map("thumbnail_url")
+  filename        String
+  filesize        Int?     // bytes
+  mimeType        String   @map("mime_type")
+
+  // Dimensions
+  width           Int?
+  height          Int?
+  duration        Float?   // seconds (for video/audio)
+
+  // Generation Info
+  generatedBy     String?  @map("generated_by") // "dalle", "stability", "elevenlabs", "manual"
+  prompt          String?  @db.Text
+  generationConfig Json?   @map("generation_config")
+
+  // Organization
+  tags            String[]
+  description     String?  @db.Text
+
+  // Usage
+  usageCount      Int      @default(0) @map("usage_count")
+
+  // Timestamps
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([userId, type])
+  @@index([brandId])
+  @@index([generatedBy])
+  @@map("media")
+}
+
+// ============================================
+// PUBLISHING & DISTRIBUTION
+// ============================================
+
+model Publication {
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  brandId         String?   @map("brand_id")
+  contentId       String    @map("content_id")
+
+  // Platform Details
+  platform        String    // "sanity", "youtube", "linkedin", "twitter"
+  platformPostId  String?   @map("platform_post_id")
+  publishedUrl    String?   @map("published_url")
+
+  // Status
+  status          String    @default("scheduled") // "scheduled", "published", "failed"
+  errorMessage    String?   @map("error_message") @db.Text
+
+  // Performance Metrics
+  performanceMetrics Json?  @map("performance_metrics")
+  // Structure: {
+  //   views: number
+  //   clicks: number
+  //   shares: number
+  //   likes: number
+  //   comments: number
+  //   engagementRate: number
+  // }
+
+  // Timestamps
+  scheduledFor    DateTime? @map("scheduled_for")
+  publishedAt     DateTime? @map("published_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relationships
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brand           Brand?            @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  content         GeneratedContent  @relation(fields: [contentId], references: [id], onDelete: Cascade)
+
+  @@index([userId, platform])
+  @@index([brandId])
+  @@index([platform, status])
+  @@index([scheduledFor])
+  @@index([publishedAt])
+  @@map("publications")
+}
+
+// ============================================
+// ANALYTICS
+// ============================================
+
+model Analytics {
+  id              String   @id @default(uuid())
+  publicationId   String   @map("publication_id")
+
+  // Metrics
+  platform        String
+  views           Int      @default(0)
+  clicks          Int      @default(0)
+  shares          Int      @default(0)
+  likes           Int      @default(0)
+  comments        Int      @default(0)
+
+  // Calculated Metrics
+  engagementRate  Float?   @map("engagement_rate")
+  ctr             Float?   // Click-through rate
+
+  // Time-series Data
+  metricsSnapshot Json?    @map("metrics_snapshot")
+
+  // Date
+  date            DateTime @default(now())
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([publicationId])
+  @@index([platform, date])
+  @@map("analytics")
+}
+
+// ============================================
+// API CONFIGURATIONS
+// ============================================
+
+model ApiConfig {
+  id              String    @id @default(uuid())
+  userId          String?   @map("user_id")
+
+  // Service Details
+  serviceName     String    @map("service_name") // "anthropic", "openai", "reddit", etc.
+  apiKey          String    @map("api_key")      // Encrypted
+  endpoint        String?
+
+  // Rate Limiting
+  rateLimitPerHour Int?     @map("rate_limit_per_hour")
+  rateLimitPerDay  Int?     @map("rate_limit_per_day")
+
+  // Usage Tracking
+  requestsThisHour Int      @default(0) @map("requests_this_hour")
+  requestsToday    Int      @default(0) @map("requests_today")
+  lastResetHour    DateTime? @map("last_reset_hour")
+  lastResetDay     DateTime? @map("last_reset_day")
+
+  // Status
+  active          Boolean  @default(true)
+
+  // Timestamps
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, serviceName])
+  @@index([serviceName])
+  @@map("api_configs")
+}
+
+// ============================================
+// JOB LOGS
+// ============================================
+
+model JobLog {
+  id              String    @id @default(uuid())
+
+  // Job Details
+  jobId           String    @map("job_id")
+  jobType         String    @map("job_type") // "content_generation", "research", "media_generation"
+
+  // Status
+  status          String    // "completed", "failed", "processing"
+  startedAt       DateTime  @map("started_at")
+  completedAt     DateTime? @map("completed_at")
+
+  // Execution Details
+  input           Json?
+  output          Json?
+  errorMessage    String?   @map("error_message") @db.Text
+  errorStack      String?   @map("error_stack") @db.Text
+
+  // Performance
+  duration        Int?      // milliseconds
+  retryCount      Int       @default(0) @map("retry_count")
+
+  // Timestamp
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  @@index([jobType, status])
+  @@index([startedAt])
+  @@map("job_logs")
+}

@@ -11,11 +11,17 @@
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "type-check": "tsc --noEmit"
   },
-  "keywords": ["ai", "content", "marketing", "automation"],
+  "keywords": [
+    "ai",
+    "content",
+    "marketing",
+    "automation"
+  ],
   "author": "Arkane",
   "license": "MIT",
   "packageManager": "pnpm@10.10.0",
   "dependencies": {
+    "@prisma/client": "^6.19.0",
     "next": "^16.0.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
@@ -30,7 +36,9 @@
     "eslint-config-prettier": "^10.1.8",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
+    "prisma": "^6.19.0",
     "tailwindcss": "^4.1.17",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   }
 }
