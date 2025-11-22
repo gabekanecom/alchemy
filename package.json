@@ -17,6 +17,7 @@
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
+    "workers": "DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/alchemy_platform?schema=public\" REDIS_URL=\"redis://:alchemyredis@localhost:6379\" tsx workers/index.ts",
     "test:connections": "DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/alchemy_platform?schema=public\" REDIS_URL=\"redis://:alchemyredis@localhost:6379\" tsx scripts/test-connections.ts"
   },
   "keywords": [
