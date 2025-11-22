@@ -33,6 +33,8 @@
     "@anthropic-ai/sdk": "^0.70.1",
     "@hookform/resolvers": "^5.2.2",
     "@prisma/client": "^6.19.0",
+    "@supabase/ssr": "^0.7.0",
+    "@supabase/supabase-js": "^2.84.0",
     "@tanstack/react-query": "^5.90.10",
     "axios": "^1.13.2",
     "bullmq": "^5.64.1",
