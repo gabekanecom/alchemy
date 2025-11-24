@@ -91,6 +91,8 @@ model Brand {
   contentQueue    ContentQueue[]
   generatedContent GeneratedContent[]
   publications    Publication[]
+  discoveryConfig DiscoveryConfig?
+  discoveryRuns   DiscoveryRun[]
 
   @@index([userId])
   @@index([slug])
@@ -102,30 +104,39 @@ model Brand {
 // ============================================
 
 model Idea {
-  id              String   @id @default(uuid())
-  userId          String   @map("user_id")
-  brandId         String?  @map("brand_id")
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  brandId         String?   @map("brand_id")
 
   // Content
   title           String
-  description     String?  @db.Text
+  description     String?   @db.Text
   keywords        String[]
+  contentBrief    String?   @db.Text @map("content_brief")
 
   // Source & Discovery
-  source          String   // "manual", "reddit", "youtube", "twitter", "firecrawl"
-  sourceUrl       String?  @map("source_url")
-  sourceData      Json?    @map("source_data")
+  source          String    // "manual", "reddit", "youtube", "twitter", "seo", "firecrawl"
+  sourceUrl       String?   @map("source_url")
+  sourceId        String?   @map("source_id")  // External ID from source platform
+  sourceData      Json?     @map("source_data")
+  discoveredAt    DateTime? @map("discovered_at")
 
   // Classification
-  targetPlatforms String[] @map("target_platforms") // ["blog", "youtube", "linkedin"]
-  contentType     String   @map("content_type")     // "how-to", "listicle", "case-study"
-  targetAudience  String?  @map("target_audience")
+  targetPlatforms String[]  @map("target_platforms") // ["blog", "youtube", "linkedin"]
+  contentType     String?   @map("content_type")     // "how-to", "listicle", "case-study"
+  targetAudience  String?   @map("target_audience")
+  category        String?   // Auto-categorized topic
+  tags            String[]
 
-  // Scoring & Metrics
-  viralityScore   Float?   @map("virality_score")
-  relevanceScore  Float?   @map("relevance_score")
-  competitionScore Float?  @map("competition_score")
-  overallScore    Float?   @map("overall_score")
+  // Scoring & Metrics (0-100 scale)
+  viralityScore    Float?   @default(0) @map("virality_score")
+  relevanceScore   Float?   @default(0) @map("relevance_score")
+  competitionScore Float?   @default(0) @map("competition_score") // Inverse: 100 = low competition
+  timelinessScore  Float?   @default(0) @map("timeliness_score")
+  overallScore     Float?   @default(0) @map("overall_score")     // Weighted composite
+
+  // Detailed Metrics
+  metrics         Json?     // Detailed breakdown of scoring
 
   // SEO Data
   seoData         Json?    @map("seo_data")
@@ -135,10 +146,33 @@ model Idea {
   //   trendData: object
   // }
 
+  // Competitive Intelligence
+  competitorData  Json?    @map("competitor_data")
+  contentGap      Boolean? @default(false) @map("content_gap")
+
+  // Trend Analysis
+  trendData       Json?    @map("trend_data")
+  trendDirection  String?  @map("trend_direction") // "rising", "stable", "declining"
+
+  // Research Notes
+  researchNotes   String?  @db.Text @map("research_notes")
+  aiInsights      String?  @db.Text @map("ai_insights")
+
   // Status & Priority
-  priority        String   @default("medium") // "low", "medium", "high"
-  status          String   @default("new")    // "new", "researching", "queued", "in_production", "published", "archived"
+  priority        String   @default("medium") // "low", "medium", "high", "urgent"
+  status          String   @default("new")    // "new", "researching", "validated", "queued", "in_production", "published", "archived"
+  reviewStatus    String?  @map("review_status") // "pending", "approved", "rejected"
   notes           String?  @db.Text
+
+  // Validation
+  isValidated     Boolean   @default(false) @map("is_validated")
+  validatedAt     DateTime? @map("validated_at")
+  validatedBy     String?   @map("validated_by")
+
+  // Duplicate Detection
+  similarIdeas    String[]  @map("similar_ideas") // IDs of similar/duplicate ideas
+  isDuplicate     Boolean   @default(false) @map("is_duplicate")
+  parentIdeaId    String?   @map("parent_idea_id")
 
   // Timestamps
   createdAt       DateTime @default(now()) @map("created_at")
@@ -150,10 +184,88 @@ model Idea {
   contentQueue    ContentQueue[]
 
   @@index([userId, status])
-  @@index([brandId])
+  @@index([brandId, status, overallScore])
   @@index([source])
   @@index([status])
+  @@index([overallScore])
+  @@index([discoveredAt])
+  @@index([sourceId, source]) // For duplicate detection
   @@map("ideas")
+}
+
+// Discovery configurations per brand
+model DiscoveryConfig {
+  id              String    @id @default(uuid())
+  brandId         String    @unique @map("brand_id")
+
+  // Enabled Sources
+  enabledSources  String[]  @map("enabled_sources") // reddit, youtube, twitter, etc.
+
+  // Reddit Configuration
+  redditConfig    Json?     @map("reddit_config") // subreddits, filters, keywords
+
+  // YouTube Configuration
+  youtubeConfig   Json?     @map("youtube_config") // channels, keywords, filters
+
+  // Twitter Configuration
+  twitterConfig   Json?     @map("twitter_config") // accounts, hashtags, keywords
+
+  // SEO Configuration
+  seoConfig       Json?     @map("seo_config") // target keywords, competitors
+
+  // Firecrawl Configuration
+  firecrawlConfig Json?     @map("firecrawl_config") // URLs to scrape
+
+  // Scoring Weights (0-1, should sum to 1)
+  scoringWeights  Json      @map("scoring_weights") // virality, relevance, competition, timeliness
+
+  // Filters
+  minScore        Float?    @default(50) @map("min_score") // Minimum overall score to save
+  excludeKeywords String[]  @map("exclude_keywords") // Filter out unwanted topics
+
+  // Schedule
+  discoverySchedule Json?   @map("discovery_schedule") // When to run discovery
+
+  // Limits
+  maxIdeasPerDay  Int?      @default(50) @map("max_ideas_per_day")
+
+  brand           Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@map("discovery_configs")
+}
+
+// Discovery run logs
+model DiscoveryRun {
+  id              String    @id @default(uuid())
+  brandId         String    @map("brand_id")
+
+  source          String    // Which source was scraped
+  status          String    // running, completed, failed
+
+  startedAt       DateTime  @map("started_at")
+  completedAt     DateTime? @map("completed_at")
+
+  // Results
+  ideasFound      Int       @default(0) @map("ideas_found")
+  ideasSaved      Int       @default(0) @map("ideas_saved")
+  ideasFiltered   Int       @default(0) @map("ideas_filtered") // Below threshold
+
+  // Error tracking
+  errorMessage    String?   @db.Text @map("error_message")
+  errorCount      Int       @default(0) @map("error_count")
+
+  // Metadata
+  metadata        Json?     // Source-specific metadata
+
+  brand           Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  @@index([brandId, source, startedAt])
+  @@map("discovery_runs")
 }
 
 // ============================================
@@ -344,6 +456,7 @@ model Publication {
   userId          String    @map("user_id")
   brandId         String?   @map("brand_id")
   contentId       String    @map("content_id")
+  integrationId   String?   @map("integration_id") // Which integration was used for publishing
 
   // Platform Details
   platform        String    // "sanity", "youtube", "linkedin", "twitter"
@@ -418,7 +531,104 @@ model Analytics {
 }
 
 // ============================================
-// API CONFIGURATIONS
+// INTEGRATION MANAGEMENT
+// ============================================
+
+// User's configured integrations (AI, publishing, media, etc.)
+model Integration {
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  brandId         String?   @map("brand_id") // Optional: brand-specific integration
+
+  // Integration Type & Provider
+  category        String    // "ai_provider", "media_generation", "publishing", "analytics"
+  provider        String    // "anthropic", "openai", "dalle", "midjourney", "sanity", "wordpress", "linkedin", etc.
+
+  // Display Info
+  displayName     String    @map("display_name")
+  description     String?   @db.Text
+  iconUrl         String?   @map("icon_url")
+
+  // Configuration
+  config          Json      // Provider-specific configuration (API keys, settings, etc.)
+  // Structure varies by provider:
+  // AI: { apiKey, model, temperature, maxTokens, endpoint }
+  // Media: { apiKey, style, size, quality }
+  // Publishing: { apiKey, siteUrl, credentials }
+
+  // Capabilities
+  capabilities    String[]  // ["text_generation", "image_generation", "video_generation", "publishing", etc.]
+
+  // Status & Preferences
+  enabled         Boolean   @default(true)
+  isDefault       Boolean   @default(false) @map("is_default") // Default for this category
+  priority        Int       @default(0)     // Higher priority = preferred choice
+
+  // Usage Limits
+  dailyLimit      Int?      @map("daily_limit")
+  monthlyLimit    Int?      @map("monthly_limit")
+
+  // Usage Tracking
+  usageToday      Int       @default(0) @map("usage_today")
+  usageThisMonth  Int       @default(0) @map("usage_this_month")
+  lastUsed        DateTime? @map("last_used")
+  lastResetDaily  DateTime? @map("last_reset_daily")
+  lastResetMonthly DateTime? @map("last_reset_monthly")
+
+  // Cost Tracking
+  costPerUnit     Float?    @map("cost_per_unit") // Cost per 1000 tokens, image, etc.
+  totalCost       Float     @default(0) @map("total_cost")
+
+  // Health & Status
+  status          String    @default("active") // "active", "error", "rate_limited", "disabled"
+  lastError       String?   @db.Text @map("last_error")
+  lastHealthCheck DateTime? @map("last_health_check")
+
+  // Timestamps
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@unique([userId, brandId, provider, category])
+  @@index([userId, category, enabled])
+  @@index([category, provider])
+  @@index([enabled, isDefault])
+  @@map("integrations")
+}
+
+// Integration usage logs
+model IntegrationUsage {
+  id              String   @id @default(uuid())
+  integrationId   String   @map("integration_id")
+  userId          String   @map("user_id")
+
+  // Usage Details
+  operation       String   // "text_generation", "image_generation", "publish", etc.
+  unitsUsed       Int      @map("units_used") // tokens, images, API calls, etc.
+  cost            Float    @default(0)
+
+  // Context
+  contentId       String?  @map("content_id")
+  jobId           String?  @map("job_id")
+
+  // Metadata
+  metadata        Json?    // Operation-specific metadata
+
+  // Performance
+  duration        Int?     // milliseconds
+  success         Boolean  @default(true)
+  errorMessage    String?  @db.Text @map("error_message")
+
+  // Timestamp
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@index([integrationId, createdAt])
+  @@index([userId, createdAt])
+  @@index([operation])
+  @@map("integration_usage")
+}
+
+// ============================================
+// API CONFIGURATIONS (Legacy - kept for backward compatibility)
 // ============================================
 
 model ApiConfig {

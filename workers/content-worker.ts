@@ -10,6 +10,7 @@ import { getBrandById } from "@/lib/db/queries/brands";
 import { getIdeaById } from "@/lib/db/queries/ideas";
 import { generateWithClaude } from "@/lib/ai/claude";
 import { generateWithGPT } from "@/lib/ai/openai";
+import { integrationManager } from "@/lib/integrations/manager";
 import type { BrandResponse } from "@/types/brand";
 import type { IdeaResponse } from "@/types/idea";
 
@@ -59,37 +60,91 @@ export const contentWorker = new Worker<ContentGenerationJob>(
 
       await updateContentQueue(queueId, userId, { progress: 40 });
 
-      // Generate content using AI
-      const aiModel = generationConfig?.aiModel || "claude-sonnet-4-20250514";
+      // Generate content using AI through Integration Manager
       let generatedText: string;
       let aiMetadata: any;
 
-      if (aiModel.startsWith("claude")) {
-        const result = await generateWithClaude({
-          systemPrompt,
-          userPrompt,
-          model: aiModel,
-          temperature: generationConfig?.temperature || 1.0,
-          maxTokens: generationConfig?.maxTokens || 4096,
-        });
-        generatedText = result.content;
-        aiMetadata = {
-          model: result.model,
-          usage: result.usage,
-        };
-      } else {
-        const result = await generateWithGPT({
-          systemPrompt,
-          userPrompt,
-          model: aiModel,
-          temperature: generationConfig?.temperature || 1.0,
-          maxTokens: generationConfig?.maxTokens || 4096,
-        });
-        generatedText = result.content;
-        aiMetadata = {
-          model: result.model,
-          usage: result.usage,
-        };
+      try {
+        // Get AI provider integration for this user
+        const integration = await integrationManager.getIntegrationFor(
+          userId,
+          "text_generation",
+          {
+            preferredProvider: generationConfig?.preferredProvider,
+          }
+        );
+
+        if (!integration) {
+          // Fallback to legacy direct API calls if no integration configured
+          console.log("[Content Worker] No AI integration found, using legacy method");
+          const aiModel = generationConfig?.aiModel || "claude-sonnet-4-20250514";
+
+          if (aiModel.startsWith("claude")) {
+            const result = await generateWithClaude({
+              systemPrompt,
+              userPrompt,
+              model: aiModel,
+              temperature: generationConfig?.temperature || 1.0,
+              maxTokens: generationConfig?.maxTokens || 4096,
+            });
+            generatedText = result.content;
+            aiMetadata = {
+              model: result.model,
+              usage: result.usage,
+              provider: "claude (legacy)",
+            };
+          } else {
+            const result = await generateWithGPT({
+              systemPrompt,
+              userPrompt,
+              model: aiModel,
+              temperature: generationConfig?.temperature || 1.0,
+              maxTokens: generationConfig?.maxTokens || 4096,
+            });
+            generatedText = result.content;
+            aiMetadata = {
+              model: result.model,
+              usage: result.usage,
+              provider: "openai (legacy)",
+            };
+          }
+        } else {
+          // Use integration manager for AI generation
+          console.log(`[Content Worker] Using AI integration: ${integration.displayName}`);
+
+          const client = integrationManager.getClient(integration);
+          const fullPrompt = `${systemPrompt}\n\n${userPrompt}`;
+
+          const response = await client.generateText(fullPrompt, {
+            temperature: generationConfig?.temperature || 0.7,
+            maxTokens: generationConfig?.maxTokens || 4096,
+          });
+
+          generatedText = response.text;
+          aiMetadata = {
+            model: response.model,
+            usage: response.usage,
+            provider: integration.provider,
+            integrationId: integration.id,
+          };
+
+          // Track usage
+          await integrationManager.trackUsage(
+            integration.id,
+            "text_generation",
+            response.usage.totalTokens || 0,
+            {
+              success: true,
+              metadata: {
+                contentType,
+                platform,
+              },
+            }
+          );
+        }
+      } catch (error: any) {
+        console.error("[Content Worker] AI generation error:", error);
+        throw new Error(`AI generation failed: ${error.message}`);
       }
 
       await updateContentQueue(queueId, userId, { progress: 70 });

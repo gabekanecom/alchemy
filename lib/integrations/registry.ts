@@ -1,0 +1,334 @@
+// Integration Provider Registry
+// Central registry of all available integration providers
+
+import {
+  IntegrationProvider,
+  anthropicConfigSchema,
+  openaiConfigSchema,
+  geminiConfigSchema,
+  dalleConfigSchema,
+  runwayConfigSchema,
+  sanityConfigSchema,
+  wordpressConfigSchema,
+  linkedinConfigSchema,
+  twitterConfigSchema,
+} from "./types";
+
+// Provider client classes (to be implemented)
+import { AnthropicClient } from "./clients/anthropic";
+import { OpenAIClient } from "./clients/openai";
+import { GeminiClient } from "./clients/gemini";
+import { DALLEClient } from "./clients/dalle";
+import { RunwayClient } from "./clients/runway";
+import { SanityClient } from "./clients/sanity";
+import { WordPressClient } from "./clients/wordpress";
+import { LinkedInClient } from "./clients/linkedin";
+import { TwitterClient } from "./clients/twitter";
+
+/**
+ * INTEGRATION_REGISTRY
+ *
+ * Master registry of all available integration providers.
+ * Each provider defines its configuration, capabilities, and pricing.
+ */
+export const INTEGRATION_REGISTRY: Record<string, IntegrationProvider> = {
+  // ============================================
+  // AI TEXT GENERATION PROVIDERS
+  // ============================================
+
+  anthropic: {
+    id: "anthropic",
+    category: "ai_provider",
+    name: "Claude (Anthropic)",
+    description: "Advanced AI for text generation with state-of-the-art reasoning",
+    icon: "/integrations/anthropic.svg",
+    website: "https://anthropic.com",
+    capabilities: ["text_generation", "analysis", "editing"],
+    configSchema: anthropicConfigSchema,
+    clientClass: AnthropicClient,
+    pricing: {
+      model: "pay-per-use",
+      tiers: [
+        {
+          name: "Claude Sonnet 4.5",
+          input: 3,
+          output: 15,
+          unit: "per million tokens",
+        },
+        {
+          name: "Claude Opus 4",
+          input: 15,
+          output: 75,
+          unit: "per million tokens",
+        },
+        {
+          name: "Claude Haiku",
+          input: 0.25,
+          output: 1.25,
+          unit: "per million tokens",
+        },
+      ],
+    },
+    setupInstructions:
+      "1. Visit console.anthropic.com\n2. Navigate to API Keys section\n3. Create a new API key\n4. Copy and paste the key below",
+    setupUrl: "https://console.anthropic.com/settings/keys",
+  },
+
+  openai: {
+    id: "openai",
+    category: "ai_provider",
+    name: "OpenAI",
+    description: "GPT-4 models for versatile text generation and analysis",
+    icon: "/integrations/openai.svg",
+    website: "https://openai.com",
+    capabilities: ["text_generation", "analysis", "editing", "code_generation"],
+    configSchema: openaiConfigSchema,
+    clientClass: OpenAIClient,
+    pricing: {
+      model: "pay-per-use",
+      tiers: [
+        {
+          name: "GPT-4o",
+          input: 2.5,
+          output: 10,
+          unit: "per million tokens",
+        },
+        {
+          name: "GPT-4 Turbo",
+          input: 10,
+          output: 30,
+          unit: "per million tokens",
+        },
+        {
+          name: "GPT-4o mini",
+          input: 0.15,
+          output: 0.6,
+          unit: "per million tokens",
+        },
+      ],
+    },
+    setupInstructions:
+      "1. Visit platform.openai.com/api-keys\n2. Click 'Create new secret key'\n3. Copy the key (you won't see it again)\n4. Paste it below",
+    setupUrl: "https://platform.openai.com/api-keys",
+  },
+
+  gemini: {
+    id: "gemini",
+    category: "ai_provider",
+    name: "Google Gemini",
+    description: "Google's multimodal AI for text generation and analysis",
+    icon: "/integrations/google.svg",
+    website: "https://ai.google.dev",
+    capabilities: ["text_generation", "analysis", "editing"],
+    configSchema: geminiConfigSchema,
+    clientClass: GeminiClient,
+    pricing: {
+      model: "pay-per-use",
+      tiers: [
+        {
+          name: "Gemini 1.5 Pro",
+          input: 1.25,
+          output: 5,
+          unit: "per million tokens",
+        },
+        {
+          name: "Gemini 1.5 Flash",
+          input: 0.075,
+          output: 0.3,
+          unit: "per million tokens",
+        },
+      ],
+    },
+    setupInstructions:
+      "1. Visit aistudio.google.com/app/apikey\n2. Create a new API key\n3. Copy and paste it below",
+    setupUrl: "https://aistudio.google.com/app/apikey",
+  },
+
+  // ============================================
+  // IMAGE GENERATION PROVIDERS
+  // ============================================
+
+  dalle: {
+    id: "dalle",
+    category: "image_generation",
+    name: "DALL-E",
+    description: "OpenAI's image generation for blog graphics and social media",
+    icon: "/integrations/openai.svg",
+    website: "https://openai.com",
+    capabilities: ["image_generation"],
+    configSchema: dalleConfigSchema,
+    clientClass: DALLEClient,
+    pricing: {
+      model: "pay-per-use",
+      tiers: [
+        {
+          name: "DALL-E 3 HD",
+          perUnit: 0.12,
+          unit: "per image (1024x1024)",
+        },
+        {
+          name: "DALL-E 3 Standard",
+          perUnit: 0.04,
+          unit: "per image (1024x1024)",
+        },
+      ],
+    },
+    setupInstructions: "Use the same API key as OpenAI text generation",
+    setupUrl: "https://platform.openai.com/api-keys",
+  },
+
+  // ============================================
+  // VIDEO GENERATION PROVIDERS
+  // ============================================
+
+  runway: {
+    id: "runway",
+    category: "video_generation",
+    name: "Runway Gen-3",
+    description: "AI video generation for content and B-roll",
+    icon: "/integrations/runway.svg",
+    website: "https://runwayml.com",
+    capabilities: ["video_generation"],
+    configSchema: runwayConfigSchema,
+    clientClass: RunwayClient,
+    pricing: {
+      model: "pay-per-use",
+      tiers: [
+        {
+          name: "Gen-3 Alpha",
+          perUnit: 0.05,
+          unit: "per second of video",
+        },
+      ],
+    },
+    setupInstructions:
+      "1. Visit runwayml.com\n2. Sign up for API access\n3. Generate an API key\n4. Paste it below",
+    setupUrl: "https://runwayml.com",
+  },
+
+  // ============================================
+  // CMS PUBLISHING PROVIDERS
+  // ============================================
+
+  sanity: {
+    id: "sanity",
+    category: "publishing",
+    name: "Sanity CMS",
+    description: "Headless CMS for publishing blog content",
+    icon: "/integrations/sanity.svg",
+    website: "https://sanity.io",
+    capabilities: ["blog_publishing", "media_management"],
+    configSchema: sanityConfigSchema,
+    clientClass: SanityClient,
+    pricing: {
+      model: "free",
+    },
+    setupInstructions:
+      "1. Go to sanity.io/manage\n2. Select your project\n3. Navigate to API → Tokens\n4. Create a token with Editor permissions\n5. Copy project ID, dataset, and token below",
+    setupUrl: "https://www.sanity.io/manage",
+  },
+
+  wordpress: {
+    id: "wordpress",
+    category: "publishing",
+    name: "WordPress",
+    description: "Publish content to WordPress sites via REST API",
+    icon: "/integrations/wordpress.svg",
+    website: "https://wordpress.org",
+    capabilities: ["blog_publishing"],
+    configSchema: wordpressConfigSchema,
+    clientClass: WordPressClient,
+    pricing: {
+      model: "free",
+    },
+    setupInstructions:
+      "1. Log into your WordPress admin panel\n2. Go to Users → Profile\n3. Scroll down to Application Passwords\n4. Enter a name and click 'Add New Application Password'\n5. Copy the generated password and paste below",
+  },
+
+  // ============================================
+  // SOCIAL MEDIA PROVIDERS
+  // ============================================
+
+  linkedin: {
+    id: "linkedin",
+    category: "social_media",
+    name: "LinkedIn",
+    description: "Publish posts to your LinkedIn profile or company page",
+    icon: "/integrations/linkedin.svg",
+    website: "https://linkedin.com",
+    capabilities: ["social_publishing"],
+    configSchema: linkedinConfigSchema,
+    clientClass: LinkedInClient,
+    pricing: {
+      model: "free",
+    },
+    setupInstructions: "Click 'Connect LinkedIn' below to authenticate via OAuth 2.0",
+    oauth: {
+      authUrl: "https://www.linkedin.com/oauth/v2/authorization",
+      tokenUrl: "https://www.linkedin.com/oauth/v2/accessToken",
+      scopes: ["openid", "profile", "w_member_social"],
+    },
+  },
+
+  twitter: {
+    id: "twitter",
+    category: "social_media",
+    name: "Twitter / X",
+    description: "Publish tweets and threads to your Twitter account",
+    icon: "/integrations/twitter.svg",
+    website: "https://twitter.com",
+    capabilities: ["social_publishing"],
+    configSchema: twitterConfigSchema,
+    clientClass: TwitterClient,
+    pricing: {
+      model: "free",
+    },
+    setupInstructions:
+      "1. Go to developer.twitter.com/en/portal/dashboard\n2. Create a project and app\n3. Navigate to Keys and tokens\n4. Generate API Key & Secret, Access Token & Secret\n5. Paste all four values below",
+    setupUrl: "https://developer.twitter.com/en/portal/dashboard",
+  },
+};
+
+/**
+ * Get provider definition by ID
+ */
+export function getProvider(providerId: string): IntegrationProvider | undefined {
+  return INTEGRATION_REGISTRY[providerId];
+}
+
+/**
+ * Get all providers for a specific category
+ */
+export function getProvidersByCategory(category: string): IntegrationProvider[] {
+  return Object.values(INTEGRATION_REGISTRY).filter((p) => p.category === category);
+}
+
+/**
+ * Get all providers with a specific capability
+ */
+export function getProvidersByCapability(capability: string): IntegrationProvider[] {
+  return Object.values(INTEGRATION_REGISTRY).filter((p) => p.capabilities.includes(capability as any));
+}
+
+/**
+ * Get all available providers
+ */
+export function getAllProviders(): IntegrationProvider[] {
+  return Object.values(INTEGRATION_REGISTRY);
+}
+
+/**
+ * Get categorized providers for UI display
+ */
+export function getCategorizedProviders() {
+  const categories = {
+    ai_provider: getProvidersByCategory("ai_provider"),
+    image_generation: getProvidersByCategory("image_generation"),
+    video_generation: getProvidersByCategory("video_generation"),
+    publishing: getProvidersByCategory("publishing"),
+    social_media: getProvidersByCategory("social_media"),
+    analytics: getProvidersByCategory("analytics"),
+  };
+
+  return categories;
+}

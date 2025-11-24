@@ -6,6 +6,12 @@ import { prisma } from "@/lib/db/client";
  */
 export async function getCurrentUser() {
   const supabase = await createClient();
+
+  // If Supabase is not configured, return null
+  if (!supabase) {
+    return null;
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
