@@ -188,6 +188,26 @@ export function GenerateImageModal({
             </p>
           </div>
 
+          {/* Provider Info */}
+          {selectedIntegration && (
+            <>
+              {integrations.find((i) => i.id === selectedIntegration)?.provider === "banana" && (
+                <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                  <p className="text-sm text-green-300">
+                    💰 <strong>Nano Banana:</strong> Ultra-fast and affordable at $0.002/image
+                  </p>
+                </div>
+              )}
+              {integrations.find((i) => i.id === selectedIntegration)?.provider === "grok-imagine" && (
+                <div className="p-3 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                  <p className="text-sm text-purple-300">
+                    ✨ <strong>Grok Imagine:</strong> Creative, high-quality images from X.AI
+                  </p>
+                </div>
+              )}
+            </>
+          )}
+
           {/* Image Options */}
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
@@ -202,6 +222,12 @@ export function GenerateImageModal({
                   <SelectItem value="1024x1024">Square (1024x1024)</SelectItem>
                   <SelectItem value="1792x1024">Landscape (1792x1024)</SelectItem>
                   <SelectItem value="1024x1792">Portrait (1024x1792)</SelectItem>
+                  {integrations.find((i) => i.id === selectedIntegration)?.provider === "banana" && (
+                    <>
+                      <SelectItem value="512x512">Small (512×512)</SelectItem>
+                      <SelectItem value="768x768">Medium (768×768)</SelectItem>
+                    </>
+                  )}
                 </SelectContent>
               </Select>
             </div>

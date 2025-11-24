@@ -19,11 +19,14 @@ import { AnthropicClient } from "./clients/anthropic";
 import { OpenAIClient } from "./clients/openai";
 import { GeminiClient } from "./clients/gemini";
 import { DALLEClient } from "./clients/dalle";
+import { GrokImagineClient } from "./clients/grok-imagine";
+import { BananaClient } from "./clients/banana";
 import { RunwayClient } from "./clients/runway";
 import { SanityClient } from "./clients/sanity";
 import { WordPressClient } from "./clients/wordpress";
 import { LinkedInClient } from "./clients/linkedin";
 import { TwitterClient } from "./clients/twitter";
+import { z } from "zod";
 
 /**
  * INTEGRATION_REGISTRY
@@ -175,6 +178,61 @@ export const INTEGRATION_REGISTRY: Record<string, IntegrationProvider> = {
     },
     setupInstructions: "Use the same API key as OpenAI text generation",
     setupUrl: "https://platform.openai.com/api-keys",
+  },
+
+  "grok-imagine": {
+    id: "grok-imagine",
+    category: "image_generation",
+    name: "Grok Imagine",
+    description: "X.AI's Grok Imagine for creative image generation",
+    icon: "/integrations/xai.svg",
+    website: "https://x.ai",
+    capabilities: ["image_generation"],
+    configSchema: z.object({
+      apiKey: z.string().min(1, "API key is required"),
+    }),
+    clientClass: GrokImagineClient,
+    pricing: {
+      model: "pay-per-use",
+      tiers: [
+        {
+          name: "Grok Imagine",
+          perUnit: 0.05,
+          unit: "per image",
+        },
+      ],
+    },
+    setupInstructions:
+      "1. Visit x.ai or console.x.ai\n2. Generate an API key\n3. Paste it below",
+    setupUrl: "https://x.ai",
+  },
+
+  banana: {
+    id: "banana",
+    category: "image_generation",
+    name: "Banana (Nano)",
+    description: "Fast, affordable image generation with Nano Banana model",
+    icon: "/integrations/banana.svg",
+    website: "https://banana.dev",
+    capabilities: ["image_generation"],
+    configSchema: z.object({
+      apiKey: z.string().min(1, "API key is required"),
+      modelKey: z.string().optional(),
+    }),
+    clientClass: BananaClient,
+    pricing: {
+      model: "pay-per-use",
+      tiers: [
+        {
+          name: "Nano Banana",
+          perUnit: 0.002,
+          unit: "per image",
+        },
+      ],
+    },
+    setupInstructions:
+      "1. Visit banana.dev\n2. Sign up and create an API key\n3. Deploy nano-banana model\n4. Copy API key and model key",
+    setupUrl: "https://banana.dev",
   },
 
   // ============================================
