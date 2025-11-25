@@ -237,184 +237,180 @@ export default function PublishPage() {
           <div className="flex items-center justify-center py-12">
             <Loader2 className="w-8 h-8 animate-spin text-gold-500" />
           </div>
-        ) : (
-          <>
-            {view === "calendar" ? (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Calendar */}
-                <Card className="bg-gray-50 border-gray-200 p-6 lg:col-span-2">
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={(date) => date && setSelectedDate(date)}
-                    className="rounded-md border-gray-300"
-                    modifiers={{
-                      hasPosts: (date) => {
-                        const dateKey = startOfDay(date).toISOString();
-                        return !!datesWithPosts[dateKey];
-                      },
-                    }}
-                    modifiersStyles={{
-                      hasPosts: {
-                        fontWeight: "bold",
-                        textDecoration: "underline",
-                        color: "#F59E0B",
-                      },
-                    }}
-                  />
+        ) : view === "calendar" ? (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Calendar */}
+            <Card className="bg-gray-50 border-gray-200 p-6 lg:col-span-2">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={(date) => date && setSelectedDate(date)}
+                className="rounded-md border-gray-300"
+                modifiers={{
+                  hasPosts: (date) => {
+                    const dateKey = startOfDay(date).toISOString();
+                    return !!datesWithPosts[dateKey];
+                  },
+                }}
+                modifiersStyles={{
+                  hasPosts: {
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    color: "#F59E0B",
+                  },
+                }}
+              />
 
-                  <div className="mt-4 text-xs text-gray-500">
-                    Dates with scheduled posts are highlighted in gold
-                  </div>
-                </Card>
-
-                {/* Posts on Selected Date */}
-                <Card className="bg-gray-50 border-gray-200 p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    {format(selectedDate, "MMMM d, yyyy")}
-                  </h3>
-
-                  {postsOnSelectedDate.length === 0 ? (
-                    <p className="text-sm text-gray-500 text-center py-8">
-                      No posts scheduled for this date
-                    </p>
-                  ) : (
-                    <div className="space-y-3">
-                      {postsOnSelectedDate.map((post) => (
-                        <Card
-                          key={post.id}
-                          className="bg-white border-gray-300 p-3 hover:border-gold-500/50 transition-colors"
-                        >
-                          <div className="space-y-2">
-                            <div className="flex items-start justify-between gap-2">
-                              <h4 className="text-sm font-medium text-gray-900 line-clamp-2">
-                                {post.title}
-                              </h4>
-                              {getStatusBadge(post.status)}
-                            </div>
-
-                            <div className="flex items-center gap-1 text-xs text-gray-500">
-                              <Clock className="w-3 h-3" />
-                              {format(post.scheduledFor, "h:mm a")}
-                            </div>
-
-                            <div className="flex items-center gap-1 flex-wrap">
-                              {post.platforms.map((platform) => (
-                                <span key={platform} className="text-sm">
-                                  {getPlatformIcon(platform)}
-                                </span>
-                              ))}
-                            </div>
-
-                            {post.status === "scheduled" && (
-                              <div className="flex gap-2 mt-2">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => handlePublishNow(post.id)}
-                                  className="text-xs"
-                                >
-                                  <Send className="w-3 h-3 mr-1" />
-                                  Publish Now
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => handleCancel(post.id)}
-                                  className="text-xs text-red-400 border-red-400/50"
-                                >
-                                  <Trash2 className="w-3 h-3 mr-1" />
-                                  Cancel
-                                </Button>
-                              </div>
-                            )}
-                          </div>
-                        </Card>
-                      ))}
-                    </div>
-                  )}
-                </Card>
+              <div className="mt-4 text-xs text-gray-500">
+                Dates with scheduled posts are highlighted in gold
               </div>
-            ) : (
-              /* List View */
-              <Card className="bg-gray-50 border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Posts</h3>
+            </Card>
 
-                {upcomingPosts.length === 0 ? (
-                  <p className="text-sm text-gray-500 text-center py-8">
-                    No upcoming scheduled posts
-                  </p>
-                ) : (
-                  <div className="space-y-3">
-                    {upcomingPosts.map((post) => (
-                      <Card
-                        key={post.id}
-                        className="bg-white border-gray-300 p-4 hover:border-gold-500/50 transition-colors"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-start justify-between mb-2">
-                              <h4 className="text-base font-medium text-gray-900">{post.title}</h4>
-                              {getStatusBadge(post.status)}
-                            </div>
+            {/* Posts on Selected Date */}
+            <Card className="bg-gray-50 border-gray-200 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                {format(selectedDate, "MMMM d, yyyy")}
+              </h3>
 
-                            <div className="flex items-center gap-4 text-sm text-gray-500">
-                              <div className="flex items-center gap-1">
-                                <CalendarIcon className="w-4 h-4" />
-                                {format(post.scheduledFor, "MMM d, yyyy")}
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <Clock className="w-4 h-4" />
-                                {format(post.scheduledFor, "h:mm a")}
-                              </div>
-                              <div className="flex items-center gap-1">
-                                {post.platforms.map((platform) => (
-                                  <span key={platform}>{getPlatformIcon(platform)}</span>
-                                ))}
-                              </div>
-                            </div>
-
-                            {post.error && (
-                              <div className="mt-2 text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded p-2">
-                                {post.error}
-                              </div>
-                            )}
-                          </div>
-
-                          {post.status === "scheduled" && (
-                            <div className="flex gap-2 ml-4">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handlePublishNow(post.id)}
-                              >
-                                <Send className="w-4 h-4 mr-2" />
-                                Publish Now
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleCancel(post.id)}
-                                className="text-red-400 border-red-400/50"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          )}
+              {postsOnSelectedDate.length === 0 ? (
+                <p className="text-sm text-gray-500 text-center py-8">
+                  No posts scheduled for this date
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {postsOnSelectedDate.map((post) => (
+                    <Card
+                      key={post.id}
+                      className="bg-white border-gray-300 p-3 hover:border-gold-500/50 transition-colors"
+                    >
+                      <div className="space-y-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="text-sm font-medium text-gray-900 line-clamp-2">
+                            {post.title}
+                          </h4>
+                          {getStatusBadge(post.status)}
                         </div>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </Card>
-            ) : view === "history" ? (
-              /* History View */
-              <Card className="bg-gray-50 border-gray-200 p-6">
-                <PublishHistory />
-              </Card>
-            ) : null}
-          </>
-        )}
+
+                        <div className="flex items-center gap-1 text-xs text-gray-500">
+                          <Clock className="w-3 h-3" />
+                          {format(post.scheduledFor, "h:mm a")}
+                        </div>
+
+                        <div className="flex items-center gap-1 flex-wrap">
+                          {post.platforms.map((platform) => (
+                            <span key={platform} className="text-sm">
+                              {getPlatformIcon(platform)}
+                            </span>
+                          ))}
+                        </div>
+
+                        {post.status === "scheduled" && (
+                          <div className="flex gap-2 mt-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handlePublishNow(post.id)}
+                              className="text-xs"
+                            >
+                              <Send className="w-3 h-3 mr-1" />
+                              Publish Now
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleCancel(post.id)}
+                              className="text-xs text-red-400 border-red-400/50"
+                            >
+                              <Trash2 className="w-3 h-3 mr-1" />
+                              Cancel
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </Card>
+          </div>
+        ) : view === "list" ? (
+          /* List View */
+          <Card className="bg-gray-50 border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Posts</h3>
+
+            {upcomingPosts.length === 0 ? (
+              <p className="text-sm text-gray-500 text-center py-8">
+                No upcoming scheduled posts
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {upcomingPosts.map((post) => (
+                  <Card
+                    key={post.id}
+                    className="bg-white border-gray-300 p-4 hover:border-gold-500/50 transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between mb-2">
+                          <h4 className="text-base font-medium text-gray-900">{post.title}</h4>
+                          {getStatusBadge(post.status)}
+                        </div>
+
+                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                          <div className="flex items-center gap-1">
+                            <CalendarIcon className="w-4 h-4" />
+                            {format(post.scheduledFor, "MMM d, yyyy")}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            {format(post.scheduledFor, "h:mm a")}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            {post.platforms.map((platform) => (
+                              <span key={platform}>{getPlatformIcon(platform)}</span>
+                            ))}
+                          </div>
+                        </div>
+
+                        {post.error && (
+                          <div className="mt-2 text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded p-2">
+                            {post.error}
+                          </div>
+                        )}
+                      </div>
+
+                      {post.status === "scheduled" && (
+                        <div className="flex gap-2 ml-4">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handlePublishNow(post.id)}
+                          >
+                            <Send className="w-4 h-4 mr-2" />
+                            Publish Now
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleCancel(post.id)}
+                            className="text-red-400 border-red-400/50"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </Card>
+        ) : view === "history" ? (
+          /* History View */
+          <Card className="bg-gray-50 border-gray-200 p-6">
+            <PublishHistory />
+          </Card>
+        ) : null}
       </div>
     </AppLayout>
   );

@@ -106,7 +106,6 @@ const config: Config = {
         "gold-md": "0 4px 20px rgba(255, 184, 0, 0.15)",
         "gold-lg": "0 8px 40px rgba(255, 184, 0, 0.25)",
       },
-    },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
