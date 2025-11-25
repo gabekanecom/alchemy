@@ -1,291 +1,437 @@
-import { redirect } from "next/navigation";
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { getCurrentUser } from "@/lib/auth/utils";
 import { AppLayout } from "@/components/layout/app-layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BulkGenerateModal } from "@/components/ideas/bulk-generate-modal";
+import {
+  Lightbulb,
+  Search,
+  Plus,
+  Sparkles,
+  Zap,
+  TrendingUp,
+  Trash2,
+  Loader2,
+  RefreshCw,
+} from "lucide-react";
 
-export default async function IdeasPage() {
-  const user = await getCurrentUser();
+export default function IdeasPage() {
+  const [ideas, setIdeas] = useState<any[]>([]);
+  const [filteredIdeas, setFilteredIdeas] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filters, setFilters] = useState({
+    brand: "all",
+    source: "all",
+    status: "all",
+    sortBy: "newest",
+  });
+  const [showGenerateModal, setShowGenerateModal] = useState(false);
+  const [generateForIdeas, setGenerateForIdeas] = useState<string[]>([]);
 
-  if (!user) {
-    redirect("/auth/login");
+  useEffect(() => {
+    fetchIdeas();
+  }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [ideas, filters, searchQuery]);
+
+  async function fetchIdeas() {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/ideas");
+      const data = await response.json();
+      setIdeas(data.ideas || []);
+    } catch (error) {
+      console.error("Failed to fetch ideas:", error);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  // TODO: Fetch from API
-  const ideas = [];
-  const brands = [];
+  function applyFilters() {
+    let filtered = [...ideas];
+
+    // Brand filter
+    if (filters.brand !== "all") {
+      filtered = filtered.filter((idea) => idea.brandId === filters.brand);
+    }
+
+    // Source filter
+    if (filters.source !== "all") {
+      filtered = filtered.filter((idea) => idea.source === filters.source);
+    }
+
+    // Status filter
+    if (filters.status !== "all") {
+      filtered = filtered.filter((idea) => idea.status === filters.status);
+    }
+
+    // Search
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (idea) =>
+          idea.title?.toLowerCase().includes(query) ||
+          idea.description?.toLowerCase().includes(query) ||
+          idea.keywords?.some((k: string) => k.toLowerCase().includes(query))
+      );
+    }
+
+    // Sort
+    switch (filters.sortBy) {
+      case "newest":
+        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        break;
+      case "score":
+        filtered.sort((a, b) => (b.overallScore || 0) - (a.overallScore || 0));
+        break;
+      case "virality":
+        filtered.sort((a, b) => (b.viralityScore || 0) - (a.viralityScore || 0));
+        break;
+    }
+
+    setFilteredIdeas(filtered);
+  }
+
+  function toggleSelect(id: string) {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  }
+
+  function toggleSelectAll() {
+    if (selectedIds.length === filteredIdeas.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredIdeas.map((i) => i.id));
+    }
+  }
+
+  function handleBulkGenerate() {
+    setGenerateForIdeas(selectedIds);
+    setShowGenerateModal(true);
+  }
+
+  async function handleBulkDelete() {
+    if (!confirm(`Delete ${selectedIds.length} ideas?`)) return;
+
+    try {
+      await Promise.all(
+        selectedIds.map((id) => fetch(`/api/ideas/${id}`, { method: "DELETE" }))
+      );
+      fetchIdeas();
+      setSelectedIds([]);
+    } catch (error) {
+      console.error("Failed to delete ideas:", error);
+    }
+  }
 
   return (
     <AppLayout>
-      <div className="py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Content Ideas</h1>
-              <p className="mt-1 text-sm text-gray-600">
-                Capture, score, and transform ideas into content
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <Link href="/ideas/discover">
-                <Button variant="outline">
-                  <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  Discover Ideas
-                </Button>
-              </Link>
-              <Link href="/ideas/new">
-                <Button>
-                  <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  Add Idea
-                </Button>
-              </Link>
-            </div>
+      <div className="p-8 space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-display font-bold text-white flex items-center gap-2">
+              <Lightbulb className="w-8 h-8 text-gold-500" />
+              Content Ideas
+            </h1>
+            <p className="text-grey-200 mt-1">
+              Capture, score, and transform ideas into content
+            </p>
           </div>
 
-          {/* Filters */}
-          <div className="mb-6">
-            <div className="flex flex-wrap gap-3">
-              <select className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
-                <option>All Brands</option>
-                {brands.map((brand: any) => (
-                  <option key={brand.id} value={brand.id}>
-                    {brand.name}
-                  </option>
-                ))}
-              </select>
+          <div className="flex items-center gap-3">
+            <Button
+              onClick={fetchIdeas}
+              variant="outline"
+              size="sm"
+              className="border-grey-600 hover:border-gold-500"
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
 
-              <select className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
-                <option>All Sources</option>
-                <option>Manual</option>
-                <option>Reddit</option>
-                <option>YouTube</option>
-                <option>Twitter</option>
-                <option>Firecrawl</option>
-              </select>
+            <Link href="/discovery">
+              <Button variant="outline" className="border-grey-600 hover:border-gold-500">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Discover Ideas
+              </Button>
+            </Link>
 
-              <select className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
-                <option>All Status</option>
-                <option>New</option>
-                <option>Researching</option>
-                <option>Queued</option>
-                <option>In Production</option>
-                <option>Published</option>
-              </select>
-
-              <select className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
-                <option>Sort by: Newest</option>
-                <option>Sort by: Overall Score</option>
-                <option>Sort by: Virality Score</option>
-                <option>Sort by: Priority</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Ideas Grid/List */}
-          {ideas.length === 0 ? (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center py-12">
-                  <svg
-                    className="mx-auto h-12 w-12 text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                    />
-                  </svg>
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No ideas yet</h3>
-                  <p className="mt-1 text-sm text-gray-500">
-                    Get started by adding a new idea or discovering trending content
-                  </p>
-                  <div className="mt-6 flex gap-3 justify-center">
-                    <Link href="/ideas/new">
-                      <Button>Add Idea</Button>
-                    </Link>
-                    <Link href="/ideas/discover">
-                      <Button variant="outline">Discover Ideas</Button>
-                    </Link>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {ideas.map((idea: any) => (
-                <Card key={idea.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-start gap-4">
-                          {/* Checkbox for multi-select */}
-                          <input
-                            type="checkbox"
-                            className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                          />
-
-                          <div className="flex-1">
-                            {/* Title and Description */}
-                            <div className="mb-3">
-                              <Link href={`/ideas/${idea.id}`}>
-                                <h3 className="text-lg font-medium text-gray-900 hover:text-blue-600">
-                                  {idea.title}
-                                </h3>
-                              </Link>
-                              {idea.description && (
-                                <p className="mt-1 text-sm text-gray-600 line-clamp-2">
-                                  {idea.description}
-                                </p>
-                              )}
-                            </div>
-
-                            {/* Metadata */}
-                            <div className="flex flex-wrap gap-2 mb-3">
-                              <Badge variant="outline" className="text-xs">
-                                {idea.source}
-                              </Badge>
-                              <Badge variant="outline" className="text-xs">
-                                {idea.contentType}
-                              </Badge>
-                              {idea.priority === "high" && (
-                                <Badge className="text-xs bg-red-100 text-red-800">
-                                  High Priority
-                                </Badge>
-                              )}
-                              {idea.targetPlatforms?.map((platform: string) => (
-                                <Badge key={platform} variant="secondary" className="text-xs">
-                                  {platform}
-                                </Badge>
-                              ))}
-                            </div>
-
-                            {/* Scores */}
-                            {idea.overallScore && (
-                              <div className="flex gap-4 text-xs text-gray-600 mb-3">
-                                <div>
-                                  Overall: <strong>{idea.overallScore}/100</strong>
-                                </div>
-                                {idea.viralityScore && (
-                                  <div>
-                                    Virality: <strong>{idea.viralityScore}/100</strong>
-                                  </div>
-                                )}
-                                {idea.relevanceScore && (
-                                  <div>
-                                    Relevance: <strong>{idea.relevanceScore}/100</strong>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-
-                            {/* Keywords */}
-                            {idea.keywords?.length > 0 && (
-                              <div className="flex flex-wrap gap-1">
-                                {idea.keywords.slice(0, 5).map((keyword: string) => (
-                                  <span
-                                    key={keyword}
-                                    className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800"
-                                  >
-                                    {keyword}
-                                  </span>
-                                ))}
-                                {idea.keywords.length > 5 && (
-                                  <span className="text-xs text-gray-500">
-                                    +{idea.keywords.length - 5} more
-                                  </span>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Quick Actions - THIS IS THE KEY SMOOTH FLOW */}
-                      <div className="ml-6 flex flex-col gap-2">
-                        <Button
-                          size="sm"
-                          className="whitespace-nowrap"
-                          // TODO: Open content generation modal
-                        >
-                          <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                          </svg>
-                          Generate Content
-                        </Button>
-
-                        <div className="flex gap-1">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="flex-1"
-                            title="Generate Blog Post"
-                          >
-                            📝
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="flex-1"
-                            title="Generate Video Script"
-                          >
-                            🎬
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="flex-1"
-                            title="Generate Social Posts"
-                          >
-                            📱
-                          </Button>
-                        </div>
-
-                        <Link href={`/ideas/${idea.id}`}>
-                          <Button variant="outline" size="sm" className="w-full">
-                            View Details
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-
-          {/* Bulk Actions (shown when items are selected) */}
-          <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 hidden">
-            <Card className="shadow-lg">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-4">
-                  <span className="text-sm font-medium">3 ideas selected</span>
-                  <Button size="sm">Generate Content for All</Button>
-                  <Button variant="outline" size="sm">
-                    Change Status
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    Add to Queue
-                  </Button>
-                  <button className="text-sm text-gray-500 hover:text-gray-700">
-                    Clear
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
+            <Link href="/ideas/new">
+              <Button className="bg-gold-500 hover:bg-gold-600 text-black">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Idea
+              </Button>
+            </Link>
           </div>
         </div>
+
+        {/* Filters */}
+        <Card className="bg-grey-850 border-grey-600">
+          <CardContent className="p-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {/* Search */}
+              <div className="md:col-span-2 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-grey-400" />
+                <Input
+                  placeholder="Search ideas..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 bg-grey-900 border-grey-600 text-white"
+                />
+              </div>
+
+              {/* Source Filter */}
+              <Select
+                value={filters.source}
+                onValueChange={(v) => setFilters({ ...filters, source: v })}
+              >
+                <SelectTrigger className="bg-grey-900 border-grey-600 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Sources</SelectItem>
+                  <SelectItem value="manual">Manual</SelectItem>
+                  <SelectItem value="reddit">Reddit</SelectItem>
+                  <SelectItem value="youtube">YouTube</SelectItem>
+                  <SelectItem value="twitter">Twitter</SelectItem>
+                  <SelectItem value="seo">SEO</SelectItem>
+                  <SelectItem value="quora">Quora</SelectItem>
+                  <SelectItem value="firecrawl">Firecrawl</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Status Filter */}
+              <Select
+                value={filters.status}
+                onValueChange={(v) => setFilters({ ...filters, status: v })}
+              >
+                <SelectTrigger className="bg-grey-900 border-grey-600 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="new">New</SelectItem>
+                  <SelectItem value="in_production">In Production</SelectItem>
+                  <SelectItem value="published">Published</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Sort */}
+              <Select
+                value={filters.sortBy}
+                onValueChange={(v) => setFilters({ ...filters, sortBy: v })}
+              >
+                <SelectTrigger className="bg-grey-900 border-grey-600 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">Newest First</SelectItem>
+                  <SelectItem value="score">Overall Score</SelectItem>
+                  <SelectItem value="virality">Virality Score</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Bulk Actions Bar */}
+        {selectedIds.length > 0 && (
+          <Card className="bg-gold-500/10 border-gold-500/30">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-white font-medium">
+                  {selectedIds.length} idea{selectedIds.length !== 1 ? "s" : ""} selected
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleBulkGenerate}
+                    className="bg-gold-500 hover:bg-gold-600 text-black"
+                  >
+                    <Zap className="w-4 h-4 mr-2" />
+                    Generate Content
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleBulkDelete}
+                    className="border-grey-600 hover:border-red-500"
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Delete
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => setSelectedIds([])}
+                    className="text-grey-300"
+                  >
+                    Clear
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Ideas List */}
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+            <Loader2 className="w-8 h-8 animate-spin text-gold-500" />
+          </div>
+        ) : filteredIdeas.length === 0 ? (
+          <Card className="bg-grey-850 border-grey-600">
+            <CardContent className="text-center py-12">
+              <Lightbulb className="w-12 h-12 text-grey-400 mx-auto mb-4" />
+              <p className="text-grey-300 mb-4">
+                {ideas.length === 0 ? "No ideas yet" : "No ideas match your filters"}
+              </p>
+              {ideas.length === 0 && (
+                <div className="flex gap-3 justify-center">
+                  <Link href="/discovery">
+                    <Button className="bg-gold-500 hover:bg-gold-600 text-black">
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Discover Ideas
+                    </Button>
+                  </Link>
+                  <Link href="/ideas/new">
+                    <Button variant="outline" className="border-grey-600 hover:border-gold-500">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Manual Idea
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {/* Select All */}
+            <div className="flex items-center gap-2 px-2">
+              <Checkbox
+                checked={selectedIds.length === filteredIdeas.length}
+                onCheckedChange={toggleSelectAll}
+              />
+              <span className="text-sm text-grey-400">Select all</span>
+            </div>
+
+            {/* Ideas Cards */}
+            {filteredIdeas.map((idea) => (
+              <Card
+                key={idea.id}
+                className={`bg-grey-850 border-grey-600 hover:border-gold-500/50 transition-all ${
+                  selectedIds.includes(idea.id) ? "ring-2 ring-gold-500" : ""
+                }`}
+              >
+                <CardContent className="p-6">
+                  <div className="flex gap-4">
+                    {/* Checkbox */}
+                    <div className="pt-1">
+                      <Checkbox
+                        checked={selectedIds.includes(idea.id)}
+                        onCheckedChange={() => toggleSelect(idea.id)}
+                      />
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1">
+                      <Link href={`/ideas/${idea.id}`}>
+                        <h3 className="text-lg font-semibold text-white hover:text-gold-400 transition-colors mb-2">
+                          {idea.title}
+                        </h3>
+                      </Link>
+
+                      {idea.description && (
+                        <p className="text-grey-300 text-sm mb-3 line-clamp-2">
+                          {idea.description}
+                        </p>
+                      )}
+
+                      {/* Metadata */}
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        <Badge variant="outline" className="bg-grey-900 text-grey-300">
+                          {idea.source || "manual"}
+                        </Badge>
+                        {idea.overallScore && (
+                          <Badge variant="outline" className="bg-gold-500/10 text-gold-400 border-gold-500/30">
+                            <TrendingUp className="w-3 h-3 mr-1" />
+                            Score: {idea.overallScore}
+                          </Badge>
+                        )}
+                      </div>
+
+                      {/* Keywords */}
+                      {idea.keywords && idea.keywords.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {idea.keywords.slice(0, 5).map((keyword: string) => (
+                            <span
+                              key={keyword}
+                              className="text-xs px-2 py-1 rounded bg-grey-900 text-grey-400 border border-grey-700"
+                            >
+                              {keyword}
+                            </span>
+                          ))}
+                          {idea.keywords.length > 5 && (
+                            <span className="text-xs text-grey-500">
+                              +{idea.keywords.length - 5} more
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          setGenerateForIdeas([idea.id]);
+                          setShowGenerateModal(true);
+                        }}
+                        className="bg-gold-500 hover:bg-gold-600 text-black whitespace-nowrap"
+                      >
+                        <Zap className="w-4 h-4 mr-1" />
+                        Generate
+                      </Button>
+
+                      <Link href={`/ideas/${idea.id}`}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full border-grey-600 hover:border-gold-500"
+                        >
+                          View Details
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* Generate Content Modal */}
+      <BulkGenerateModal
+        open={showGenerateModal}
+        onOpenChange={setShowGenerateModal}
+        ideaIds={generateForIdeas}
+        onGenerated={() => {
+          fetchIdeas();
+          setSelectedIds([]);
+        }}
+      />
     </AppLayout>
   );
 }
