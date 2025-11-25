@@ -287,8 +287,51 @@ export default function IdeasPage() {
                   </Button>
                   <Button
                     variant="outline"
+                    onClick={() => {
+                      const tagsInput = prompt("Enter tags (comma-separated):");
+                      if (tagsInput) {
+                        const tags = tagsInput.split(',').map(t => t.trim());
+                        console.log("Adding tags to selected ideas:", tags);
+                        // TODO: Implement bulk tag API
+                      }
+                    }}
+                    className="border-gray-300"
+                  >
+                    Add Tags
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      const csvData = selectedIds.map(id => {
+                        const idea = ideas.find(i => i.id === id);
+                        return {
+                          title: idea?.title,
+                          description: idea?.description,
+                          source: idea?.source,
+                          score: idea?.overallScore,
+                        };
+                      });
+                      const csv = [
+                        'Title,Description,Source,Score',
+                        ...csvData.map(row =>
+                          `"${row.title}","${row.description}","${row.source}",${row.score}`
+                        )
+                      ].join('\n');
+                      const blob = new Blob([csv], { type: 'text/csv' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = 'ideas-export.csv';
+                      a.click();
+                    }}
+                    className="border-gray-300"
+                  >
+                    Export CSV
+                  </Button>
+                  <Button
+                    variant="outline"
                     onClick={handleBulkDelete}
-                    className="border-gray-300 hover:border-red-500"
+                    className="border-gray-300 hover:border-red-500 hover:text-red-600"
                   >
                     <Trash2 className="w-4 h-4 mr-2" />
                     Delete
