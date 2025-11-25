@@ -124,13 +124,54 @@ export default async function DashboardPage() {
                   <p className="text-sm text-gray-600 mb-4">
                     You're logged in as: <strong>{user.email}</strong>
                   </p>
-                  <div className="space-y-2">
-                    <p className="text-sm text-gray-600">Get started by:</p>
-                    <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                      <li>Creating your first brand</li>
-                      <li>Capturing content ideas</li>
-                      <li>Generating AI-powered content</li>
-                    </ul>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                    <a
+                      href="/brands/new"
+                      className="flex flex-col p-4 bg-gradient-gold-light rounded-lg border border-gold-200 hover:border-gold-400 hover:shadow-md transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <svg className="w-5 h-5 text-gold-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+                        <h3 className="font-semibold text-gray-900">Create Your First Brand</h3>
+                      </div>
+                      <p className="text-sm text-gray-600">Set up brand voice, audience, and preferences</p>
+                      <span className="mt-2 text-sm text-gold-600 group-hover:text-gold-700 font-medium">
+                        Get started →
+                      </span>
+                    </a>
+
+                    <a
+                      href="/discovery"
+                      className="flex flex-col p-4 bg-gradient-gold-light rounded-lg border border-gold-200 hover:border-gold-400 hover:shadow-md transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <svg className="w-5 h-5 text-gold-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <h3 className="font-semibold text-gray-900">Discover Content Ideas</h3>
+                      </div>
+                      <p className="text-sm text-gray-600">AI finds viral topics from Reddit, YouTube, and more</p>
+                      <span className="mt-2 text-sm text-gold-600 group-hover:text-gold-700 font-medium">
+                        Discover ideas →
+                      </span>
+                    </a>
+
+                    <a
+                      href="/create"
+                      className="flex flex-col p-4 bg-gradient-gold-light rounded-lg border border-gold-200 hover:border-gold-400 hover:shadow-md transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <svg className="w-5 h-5 text-gold-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                        <h3 className="font-semibold text-gray-900">Create Content</h3>
+                      </div>
+                      <p className="text-sm text-gray-600">Generate AI-powered content for any platform</p>
+                      <span className="mt-2 text-sm text-gold-600 group-hover:text-gold-700 font-medium">
+                        Start creating →
+                      </span>
+                    </a>
                   </div>
                 </CardContent>
               </Card>

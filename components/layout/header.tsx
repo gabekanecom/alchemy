@@ -1,57 +1,104 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Plus, Search } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 export function Header() {
-  const pathname = usePathname();
+  const router = useRouter();
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const navigation = [
-    { name: "Dashboard", href: "/dashboard" },
-    { name: "Brands", href: "/brands" },
-    { name: "Ideas", href: "/ideas" },
-    { name: "Content", href: "/content" },
-    { name: "Analytics", href: "/analytics" },
-  ];
+  // Keyboard shortcut handler
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setShowSearch(true);
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === "n") {
+        e.preventDefault();
+        router.push("/create");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [router]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // For now, redirect to ideas page with search query
+      router.push(`/ideas?search=${encodeURIComponent(searchQuery)}`);
+      setShowSearch(false);
+      setSearchQuery("");
+    }
+  };
 
   return (
-    <header className="bg-white border-b border-gray-200">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex">
-            <div className="flex-shrink-0 flex items-center">
-              <Link href="/dashboard" className="text-2xl font-bold text-blue-600">
-                Alchemy
-              </Link>
-            </div>
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={cn(
-                    "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium",
-                    pathname === item.href
-                      ? "border-blue-500 text-gray-900"
-                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  )}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-          <div className="flex items-center">
-            <a
-              href="/auth/logout"
-              className="text-sm font-medium text-gray-500 hover:text-gray-700"
+    <>
+      <header className="bg-white border-b border-gray-200">
+        <div className="px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Search */}
+            <button
+              onClick={() => setShowSearch(true)}
+              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-200 transition-colors min-w-[300px]"
             >
-              Sign out
-            </a>
+              <Search className="w-4 h-4" />
+              <span>Search...</span>
+              <kbd className="ml-auto px-2 py-1 text-xs bg-white border border-gray-200 rounded">
+                ⌘K
+              </kbd>
+            </button>
+
+            {/* Actions */}
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={() => router.push("/create")}
+                className="bg-gradient-gold text-white hover:opacity-90 shadow-sm"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create Content
+              </Button>
+            </div>
           </div>
         </div>
-      </nav>
-    </header>
+      </header>
+
+      {/* Search Modal */}
+      <Dialog open={showSearch} onOpenChange={setShowSearch}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Search</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSearch} className="mt-4">
+            <div className="flex items-center gap-2">
+              <Search className="w-5 h-5 text-gray-400" />
+              <Input
+                placeholder="Search ideas, content, brands..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1"
+                autoFocus
+              />
+            </div>
+            <div className="mt-4 text-sm text-gray-500">
+              <p>Press <kbd className="px-2 py-1 bg-gray-100 rounded border">Enter</kbd> to search</p>
+              <p className="mt-2">Tip: Use <kbd className="px-2 py-1 bg-gray-100 rounded border">⌘K</kbd> anytime to open search</p>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
