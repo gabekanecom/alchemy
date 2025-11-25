@@ -12,6 +12,7 @@ import { PreviewPanel } from "@/components/editor/preview-panel";
 import { PublishModal } from "@/components/editor/publish-modal";
 import { Save, Eye, Send, Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function ContentEditPage() {
   const params = useParams();
@@ -77,10 +78,10 @@ export default function ContentEditPage() {
           seoData,
         }),
       });
-      alert("Content saved successfully!");
+      toast.success("Content saved successfully!");
     } catch (error) {
       console.error("Failed to save content:", error);
-      alert("Failed to save content");
+      toast.error("Failed to save content");
     } finally {
       setSaving(false);
     }
