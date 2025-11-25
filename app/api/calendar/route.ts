@@ -105,7 +105,7 @@ export async function GET(req: NextRequest) {
     // Group publications by date
     const eventsByDate: Record<string, any[]> = {};
 
-    publications.forEach((pub) => {
+    publications.forEach((pub: any) => {
       const date = (pub.scheduledFor || pub.publishedAt)!;
       const dateKey = date.toISOString().split("T")[0];
 
