@@ -341,9 +341,12 @@ export const INTEGRATION_REGISTRY: Record<string, IntegrationProvider> = {
     pricing: {
       model: "free",
     },
-    setupInstructions:
-      "1. Go to developer.twitter.com/en/portal/dashboard\n2. Create a project and app\n3. Navigate to Keys and tokens\n4. Generate API Key & Secret, Access Token & Secret\n5. Paste all four values below",
-    setupUrl: "https://developer.twitter.com/en/portal/dashboard",
+    setupInstructions: "Click 'Connect Twitter' below to authenticate via OAuth 2.0",
+    oauth: {
+      authUrl: "https://twitter.com/i/oauth2/authorize",
+      tokenUrl: "https://api.twitter.com/2/oauth2/token",
+      scopes: ["tweet.read", "tweet.write", "users.read", "offline.access"],
+    },
   },
 };
 
