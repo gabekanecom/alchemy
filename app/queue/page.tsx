@@ -21,13 +21,33 @@ export default function ContentQueuePage() {
     platform: "all",
     brandId: "all",
   });
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
+  const [nextRefresh, setNextRefresh] = useState(5);
 
   useEffect(() => {
     fetchQueueItems();
+
+    if (!autoRefresh) return;
+
     // Auto-refresh every 5 seconds for real-time updates
-    const interval = setInterval(fetchQueueItems, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    const interval = setInterval(() => {
+      fetchQueueItems();
+    }, 5000);
+
+    // Countdown timer
+    const countdown = setInterval(() => {
+      setNextRefresh((prev) => {
+        if (prev <= 1) return 5;
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(countdown);
+    };
+  }, [autoRefresh]);
 
   useEffect(() => {
     applyFilters();
@@ -38,6 +58,8 @@ export default function ContentQueuePage() {
       const response = await fetch("/api/content/queue");
       const data = await response.json();
       setQueueItems(data.queueItems || []);
+      setLastRefresh(new Date());
+      setNextRefresh(5); // Reset countdown
     } catch (error) {
       console.error("Failed to fetch queue items:", error);
     } finally {
@@ -106,10 +128,36 @@ export default function ContentQueuePage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-display font-bold text-white flex items-center gap-2">
+            <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-2">
               <Clock className="w-8 h-8 text-gold-500" />
               Content Queue
             </h1>
+            {/* Auto-refresh indicator */}
+            <div className="flex items-center gap-3 mt-2">
+              <button
+                onClick={() => setAutoRefresh(!autoRefresh)}
+                className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm transition-colors ${
+                  autoRefresh
+                    ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                <RefreshCw className={`w-3 h-3 ${autoRefresh ? 'animate-spin' : ''}`} />
+                {autoRefresh ? 'Auto-refresh ON' : 'Auto-refresh OFF'}
+              </button>
+              {autoRefresh && (
+                <span className="text-sm text-gray-500">
+                  Next refresh in {nextRefresh}s
+                </span>
+              )}
+              <button
+                onClick={fetchQueueItems}
+                className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
+              >
+                <RefreshCw className="w-3 h-3" />
+                Refresh now
+              </button>
+            </div>
             <p className="text-grey-200 mt-1">Monitor and manage content generation jobs</p>
           </div>
 
