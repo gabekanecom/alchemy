@@ -45,7 +45,7 @@ export function CostTracker({ timeRange, brandId }: CostTrackerProps) {
 
   if (loading) {
     return (
-      <Card className="bg-grey-850 border-grey-700 p-6">
+      <Card className="bg-gray-50 border-gray-200 p-6">
         <div className="flex items-center justify-center py-12">
           <Loader2 className="w-8 h-8 animate-spin text-gold-500" />
         </div>
@@ -58,14 +58,14 @@ export function CostTracker({ timeRange, brandId }: CostTrackerProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Total Cost and Budget */}
-      <Card className="bg-grey-850 border-grey-700 p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Cost Overview</h3>
+      <Card className="bg-gray-50 border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Cost Overview</h3>
 
         <div className="space-y-6">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-grey-400">Total Spend</span>
-              <span className="text-2xl font-bold text-white">
+              <span className="text-sm text-gray-500">Total Spend</span>
+              <span className="text-2xl font-bold text-gray-900">
                 ${costData.totalCost.toFixed(2)}
               </span>
             </div>
@@ -86,10 +86,10 @@ export function CostTracker({ timeRange, brandId }: CostTrackerProps) {
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-grey-400">Budget Usage</span>
-              <span className="text-sm font-medium text-white">{costData.budgetUsage}%</span>
+              <span className="text-sm text-gray-500">Budget Usage</span>
+              <span className="text-sm font-medium text-gray-900">{costData.budgetUsage}%</span>
             </div>
-            <div className="w-full bg-grey-700 rounded-full h-3">
+            <div className="w-full bg-gray-200 rounded-full h-3">
               <div
                 className={`h-3 rounded-full transition-all ${
                   costData.budgetUsage > 90
@@ -106,20 +106,20 @@ export function CostTracker({ timeRange, brandId }: CostTrackerProps) {
             )}
           </div>
 
-          <div className="pt-4 border-t border-grey-700">
-            <h4 className="text-sm font-medium text-grey-300 mb-3">Cost per Content</h4>
+          <div className="pt-4 border-t border-gray-200">
+            <h4 className="text-sm font-medium text-gray-600 mb-3">Cost per Content</h4>
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-grey-400">Average</span>
-                <span className="text-white font-medium">$0.12</span>
+                <span className="text-gray-500">Average</span>
+                <span className="text-gray-900 font-medium">$0.12</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-grey-400">Minimum</span>
-                <span className="text-white font-medium">$0.03</span>
+                <span className="text-gray-500">Minimum</span>
+                <span className="text-gray-900 font-medium">$0.03</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-grey-400">Maximum</span>
-                <span className="text-white font-medium">$0.45</span>
+                <span className="text-gray-500">Maximum</span>
+                <span className="text-gray-900 font-medium">$0.45</span>
               </div>
             </div>
           </div>
@@ -127,8 +127,8 @@ export function CostTracker({ timeRange, brandId }: CostTrackerProps) {
       </Card>
 
       {/* Cost by Provider */}
-      <Card className="bg-grey-850 border-grey-700 p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Cost by Provider</h3>
+      <Card className="bg-gray-50 border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Cost by Provider</h3>
         <ResponsiveContainer width="100%" height={250}>
           <PieChart>
             <Pie
@@ -158,8 +158,8 @@ export function CostTracker({ timeRange, brandId }: CostTrackerProps) {
       </Card>
 
       {/* Cost Trend */}
-      <Card className="bg-grey-850 border-grey-700 p-6 lg:col-span-2">
-        <h3 className="text-lg font-semibold text-white mb-4">Cost Trend</h3>
+      <Card className="bg-gray-50 border-gray-200 p-6 lg:col-span-2">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Cost Trend</h3>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart data={costData.trend}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -181,8 +181,8 @@ export function CostTracker({ timeRange, brandId }: CostTrackerProps) {
 
       {/* Cost by Brand (if viewing all brands) */}
       {brandId === "all" && costData.byBrand.length > 0 && (
-        <Card className="bg-grey-850 border-grey-700 p-6 lg:col-span-2">
-          <h3 className="text-lg font-semibold text-white mb-4">Cost by Brand</h3>
+        <Card className="bg-gray-50 border-gray-200 p-6 lg:col-span-2">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Cost by Brand</h3>
           <div className="space-y-3">
             {costData.byBrand.map((brand: any, index: number) => (
               <div key={brand.name} className="flex items-center justify-between">
@@ -191,11 +191,11 @@ export function CostTracker({ timeRange, brandId }: CostTrackerProps) {
                     className="w-4 h-4 rounded"
                     style={{ backgroundColor: COLORS[index % COLORS.length] }}
                   />
-                  <span className="text-white">{brand.name}</span>
+                  <span className="text-gray-900">{brand.name}</span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-sm text-grey-400">{brand.pieces} pieces</span>
-                  <span className="text-lg font-semibold text-white min-w-[80px] text-right">
+                  <span className="text-sm text-gray-500">{brand.pieces} pieces</span>
+                  <span className="text-lg font-semibold text-gray-900 min-w-[80px] text-right">
                     ${brand.cost.toFixed(2)}
                   </span>
                 </div>

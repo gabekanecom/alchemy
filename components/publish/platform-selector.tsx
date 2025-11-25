@@ -92,7 +92,7 @@ export function PlatformSelector({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Label className="text-grey-300">Select Publishing Platforms</Label>
+        <Label className="text-gray-600">Select Publishing Platforms</Label>
         <div className="flex gap-2">
           <button
             onClick={selectAll}
@@ -103,7 +103,7 @@ export function PlatformSelector({
           <span className="text-grey-600">|</span>
           <button
             onClick={clearAll}
-            className="text-xs text-grey-400 hover:text-grey-300 transition-colors"
+            className="text-xs text-gray-500 hover:text-gray-600 transition-colors"
           >
             Clear
           </button>
@@ -113,17 +113,17 @@ export function PlatformSelector({
       {/* Connected Platforms */}
       {connectedPlatforms.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs text-grey-400">Connected Platforms</p>
+          <p className="text-xs text-gray-500">Connected Platforms</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {connectedPlatforms.map((platform) => {
               const isSelected = selectedPlatforms.includes(platform.id);
               return (
                 <Card
                   key={platform.id}
-                  className={`bg-grey-900 border p-4 cursor-pointer transition-all ${
+                  className={`bg-white border p-4 cursor-pointer transition-all ${
                     isSelected
                       ? "border-gold-500 bg-gold-500/5"
-                      : "border-grey-600 hover:border-grey-500"
+                      : "border-gray-300 hover:border-gray-400"
                   }`}
                   onClick={() => togglePlatform(platform.id)}
                 >
@@ -136,16 +136,16 @@ export function PlatformSelector({
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-xl">{platform.icon}</span>
-                        <span className="font-medium text-white">{platform.name}</span>
+                        <span className="font-medium text-gray-900">{platform.name}</span>
                         <Badge
                           variant="outline"
-                          className="bg-green-500/20 text-green-400 border-green-500/30 text-xs"
+                          className="bg-green-50 text-green-700 border border-green-200 border-green-500/30 text-xs"
                         >
                           <CheckCircle2 className="w-3 h-3 mr-1" />
                           Connected
                         </Badge>
                       </div>
-                      <p className="text-xs text-grey-400">{platform.description}</p>
+                      <p className="text-xs text-gray-500">{platform.description}</p>
                     </div>
                   </div>
                 </Card>
@@ -158,26 +158,26 @@ export function PlatformSelector({
       {/* Disconnected Platforms */}
       {disconnectedPlatforms.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs text-grey-400">Not Connected</p>
+          <p className="text-xs text-gray-500">Not Connected</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {disconnectedPlatforms.map((platform) => (
               <Card
                 key={platform.id}
-                className="bg-grey-900 border-grey-600 p-4 opacity-60"
+                className="bg-white border-gray-300 p-4 opacity-60"
               >
                 <div className="flex items-start gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-xl grayscale">{platform.icon}</span>
-                      <span className="font-medium text-grey-400">{platform.name}</span>
+                      <span className="font-medium text-gray-500">{platform.name}</span>
                       <Badge
                         variant="outline"
-                        className="bg-grey-500/20 text-grey-400 border-grey-500/30 text-xs"
+                        className="bg-grey-500/20 text-gray-500 border-gray-400/30 text-xs"
                       >
                         Not Connected
                       </Badge>
                     </div>
-                    <p className="text-xs text-grey-500">{platform.description}</p>
+                    <p className="text-xs text-gray-400">{platform.description}</p>
                     <button className="text-xs text-gold-500 hover:text-gold-400 mt-2">
                       Connect Platform →
                     </button>

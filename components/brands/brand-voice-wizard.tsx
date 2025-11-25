@@ -106,10 +106,10 @@ export function BrandVoiceWizard({ onComplete, initialData }: BrandVoiceWizardPr
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center font-medium transition-colors ${
                   i < step
-                    ? "bg-green-500 text-white"
+                    ? "bg-green-500 text-gray-900"
                     : i === step
                     ? "bg-gold-500 text-black"
-                    : "bg-grey-700 text-grey-400"
+                    : "bg-gray-200 text-gray-500"
                 }`}
               >
                 {i < step ? <CheckCircle2 className="w-4 h-4" /> : i}
@@ -117,26 +117,26 @@ export function BrandVoiceWizard({ onComplete, initialData }: BrandVoiceWizardPr
               {i < 4 && (
                 <div
                   className={`w-12 h-1 transition-colors ${
-                    i < step ? "bg-green-500" : "bg-grey-700"
+                    i < step ? "bg-green-500" : "bg-gray-200"
                   }`}
                 />
               )}
             </div>
           ))}
         </div>
-        <span className="text-sm text-grey-400">Step {step} of 4</span>
+        <span className="text-sm text-gray-500">Step {step} of 4</span>
       </div>
 
       {/* Step Content */}
-      <Card className="bg-grey-850 border-grey-700 p-6">
+      <Card className="bg-gray-50 border-gray-200 p-6">
         {step === 1 && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-xl font-semibold text-white mb-2 flex items-center gap-2">
+              <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
                 <Sparkles className="w-6 h-6 text-gold-500" />
                 Select Brand Tones
               </h3>
-              <p className="text-grey-400">
+              <p className="text-gray-500">
                 Choose 1-3 tones that best represent your brand's voice
               </p>
             </div>
@@ -151,13 +151,13 @@ export function BrandVoiceWizard({ onComplete, initialData }: BrandVoiceWizardPr
                     className={`p-4 cursor-pointer transition-all ${
                       isSelected
                         ? "bg-gold-500/10 border-gold-500"
-                        : "bg-grey-900 border-grey-600 hover:border-grey-500"
+                        : "bg-white border-gray-300 hover:border-gray-400"
                     }`}
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <h4 className="font-medium text-white">{tone.label}</h4>
-                        <p className="text-sm text-grey-400 mt-1">{tone.description}</p>
+                        <h4 className="font-medium text-gray-900">{tone.label}</h4>
+                        <p className="text-sm text-gray-500 mt-1">{tone.description}</p>
                       </div>
                       {isSelected && (
                         <CheckCircle2 className="w-5 h-5 text-gold-500 flex-shrink-0" />
@@ -181,11 +181,11 @@ export function BrandVoiceWizard({ onComplete, initialData }: BrandVoiceWizardPr
         {step === 2 && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-xl font-semibold text-white mb-2 flex items-center gap-2">
+              <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
                 <Sparkles className="w-6 h-6 text-gold-500" />
                 Define Personality Traits
               </h3>
-              <p className="text-grey-400">
+              <p className="text-gray-500">
                 Select 2-5 traits that capture your brand's personality
               </p>
             </div>
@@ -200,11 +200,11 @@ export function BrandVoiceWizard({ onComplete, initialData }: BrandVoiceWizardPr
                     className={`p-4 cursor-pointer transition-all text-center ${
                       isSelected
                         ? "bg-gold-500/10 border-gold-500"
-                        : "bg-grey-900 border-grey-600 hover:border-grey-500"
+                        : "bg-white border-gray-300 hover:border-gray-400"
                     }`}
                   >
                     <div className="text-3xl mb-2">{trait.icon}</div>
-                    <h4 className="font-medium text-white text-sm">{trait.label}</h4>
+                    <h4 className="font-medium text-gray-900 text-sm">{trait.label}</h4>
                     {isSelected && (
                       <CheckCircle2 className="w-4 h-4 text-gold-500 mx-auto mt-2" />
                     )}
@@ -227,16 +227,16 @@ export function BrandVoiceWizard({ onComplete, initialData }: BrandVoiceWizardPr
         {step === 3 && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-xl font-semibold text-white mb-2 flex items-center gap-2">
+              <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
                 <Sparkles className="w-6 h-6 text-gold-500" />
                 Writing Style & Vocabulary
               </h3>
-              <p className="text-grey-400">Describe how your brand communicates</p>
+              <p className="text-gray-500">Describe how your brand communicates</p>
             </div>
 
             <div className="space-y-4">
               <div>
-                <Label className="text-grey-300 mb-2 block">
+                <Label className="text-gray-600 mb-2 block">
                   Writing Style <span className="text-red-400">*</span>
                 </Label>
                 <Textarea
@@ -246,15 +246,15 @@ export function BrandVoiceWizard({ onComplete, initialData }: BrandVoiceWizardPr
                   }
                   placeholder="e.g., We use short, punchy sentences. Active voice. Occasional humor. Always actionable."
                   rows={4}
-                  className="bg-grey-900 border-grey-600 text-white"
+                  className="bg-white border-gray-300 text-gray-900"
                 />
-                <p className="text-xs text-grey-500 mt-1">
+                <p className="text-xs text-gray-400 mt-1">
                   Describe sentence structure, tone, and overall approach
                 </p>
               </div>
 
               <div>
-                <Label className="text-grey-300 mb-2 block">
+                <Label className="text-gray-600 mb-2 block">
                   Preferred Vocabulary & Phrases
                 </Label>
                 <Textarea
@@ -264,9 +264,9 @@ export function BrandVoiceWizard({ onComplete, initialData }: BrandVoiceWizardPr
                   }
                   placeholder="e.g., We say 'customers' not 'clients'. We use 'transform' and 'empower'. We avoid jargon."
                   rows={3}
-                  className="bg-grey-900 border-grey-600 text-white"
+                  className="bg-white border-gray-300 text-gray-900"
                 />
-                <p className="text-xs text-grey-500 mt-1">
+                <p className="text-xs text-gray-400 mt-1">
                   Words and phrases you prefer or avoid
                 </p>
               </div>
@@ -277,32 +277,32 @@ export function BrandVoiceWizard({ onComplete, initialData }: BrandVoiceWizardPr
         {step === 4 && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-xl font-semibold text-white mb-2 flex items-center gap-2">
+              <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
                 <Sparkles className="w-6 h-6 text-gold-500" />
                 Examples & Guidelines
               </h3>
-              <p className="text-grey-400">
+              <p className="text-gray-500">
                 Provide examples and things to avoid for consistency
               </p>
             </div>
 
             <div className="space-y-4">
               <div>
-                <Label className="text-grey-300 mb-2 block">Example Content</Label>
+                <Label className="text-gray-600 mb-2 block">Example Content</Label>
                 <Textarea
                   value={voiceData.examples}
                   onChange={(e) => setVoiceData({ ...voiceData, examples: e.target.value })}
                   placeholder="Paste 1-2 examples of content that perfectly captures your brand voice..."
                   rows={6}
-                  className="bg-grey-900 border-grey-600 text-white"
+                  className="bg-white border-gray-300 text-gray-900"
                 />
-                <p className="text-xs text-grey-500 mt-1">
+                <p className="text-xs text-gray-400 mt-1">
                   Examples help AI learn your exact style
                 </p>
               </div>
 
               <div>
-                <Label className="text-grey-300 mb-2 block">Things to Avoid</Label>
+                <Label className="text-gray-600 mb-2 block">Things to Avoid</Label>
                 <Textarea
                   value={voiceData.avoidances}
                   onChange={(e) =>
@@ -310,9 +310,9 @@ export function BrandVoiceWizard({ onComplete, initialData }: BrandVoiceWizardPr
                   }
                   placeholder="e.g., Don't use corporate buzzwords. Avoid being too salesy. Never use all caps for emphasis."
                   rows={4}
-                  className="bg-grey-900 border-grey-600 text-white"
+                  className="bg-white border-gray-300 text-gray-900"
                 />
-                <p className="text-xs text-grey-500 mt-1">
+                <p className="text-xs text-gray-400 mt-1">
                   Helps prevent off-brand content
                 </p>
               </div>

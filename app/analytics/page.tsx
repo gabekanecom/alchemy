@@ -62,17 +62,17 @@ export default function AnalyticsPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
+            <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
               <BarChart3 className="w-8 h-8 text-gold-500" />
               Analytics Dashboard
             </h1>
-            <p className="text-grey-400 mt-1">Track performance, costs, and insights</p>
+            <p className="text-gray-500 mt-1">Track performance, costs, and insights</p>
           </div>
 
           <div className="flex gap-3">
             {/* Brand Filter */}
             <Select value={selectedBrand} onValueChange={setSelectedBrand}>
-              <SelectTrigger className="bg-grey-850 border-grey-600 text-white w-48">
+              <SelectTrigger className="bg-gray-50 border-gray-300 text-gray-900 w-48">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -87,7 +87,7 @@ export default function AnalyticsPage() {
 
             {/* Time Range */}
             <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="bg-grey-850 border-grey-600 text-white w-40">
+              <SelectTrigger className="bg-gray-50 border-gray-300 text-gray-900 w-40">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -109,11 +109,11 @@ export default function AnalyticsPage() {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card className="bg-grey-850 border-grey-700 p-6">
+              <Card className="bg-gray-50 border-gray-200 p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-grey-400">Total Views</p>
-                    <p className="text-3xl font-bold text-white mt-2">
+                    <p className="text-sm text-gray-500">Total Views</p>
+                    <p className="text-3xl font-bold text-gray-900 mt-2">
                       {stats.totalViews.toLocaleString()}
                     </p>
                     <p className="text-xs text-green-400 mt-1">+12.5% from previous period</p>
@@ -122,11 +122,11 @@ export default function AnalyticsPage() {
                 </div>
               </Card>
 
-              <Card className="bg-grey-850 border-grey-700 p-6">
+              <Card className="bg-gray-50 border-gray-200 p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-grey-400">Total Engagement</p>
-                    <p className="text-3xl font-bold text-white mt-2">
+                    <p className="text-sm text-gray-500">Total Engagement</p>
+                    <p className="text-3xl font-bold text-gray-900 mt-2">
                       {stats.totalEngagement.toLocaleString()}
                     </p>
                     <p className="text-xs text-green-400 mt-1">+8.3% from previous period</p>
@@ -135,11 +135,11 @@ export default function AnalyticsPage() {
                 </div>
               </Card>
 
-              <Card className="bg-grey-850 border-grey-700 p-6">
+              <Card className="bg-gray-50 border-gray-200 p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-grey-400">Total Cost</p>
-                    <p className="text-3xl font-bold text-white mt-2">
+                    <p className="text-sm text-gray-500">Total Cost</p>
+                    <p className="text-3xl font-bold text-gray-900 mt-2">
                       ${stats.totalCost.toFixed(2)}
                     </p>
                     <p className="text-xs text-red-400 mt-1">+15.2% from previous period</p>
@@ -148,11 +148,11 @@ export default function AnalyticsPage() {
                 </div>
               </Card>
 
-              <Card className="bg-grey-850 border-grey-700 p-6">
+              <Card className="bg-gray-50 border-gray-200 p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-grey-400">Avg Virality Score</p>
-                    <p className="text-3xl font-bold text-white mt-2">
+                    <p className="text-sm text-gray-500">Avg Virality Score</p>
+                    <p className="text-3xl font-bold text-gray-900 mt-2">
                       {stats.avgViralityScore.toFixed(1)}
                     </p>
                     <p className="text-xs text-green-400 mt-1">+3.2 from previous period</p>
@@ -164,7 +164,7 @@ export default function AnalyticsPage() {
 
             {/* Tabs */}
             <Tabs defaultValue="performance" className="space-y-6">
-              <TabsList className="bg-grey-850 border-grey-700">
+              <TabsList className="bg-gray-50 border-gray-200">
                 <TabsTrigger value="performance">Performance</TabsTrigger>
                 <TabsTrigger value="costs">Costs</TabsTrigger>
                 <TabsTrigger value="usage">Usage</TabsTrigger>

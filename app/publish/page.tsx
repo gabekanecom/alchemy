@@ -93,18 +93,18 @@ export default function PublishPage() {
 
   function getStatusBadge(status: ScheduledPost["status"]) {
     const variants = {
-      scheduled: { color: "bg-blue-500/20 text-blue-400", icon: Clock, label: "Scheduled" },
+      scheduled: { color: "bg-blue-50 text-blue-700 border border-blue-200", icon: Clock, label: "Scheduled" },
       publishing: {
-        color: "bg-purple-500/20 text-purple-400",
+        color: "bg-purple-50 text-purple-700 border border-purple-200",
         icon: Loader2,
         label: "Publishing",
       },
       published: {
-        color: "bg-green-500/20 text-green-400",
+        color: "bg-green-50 text-green-700 border border-green-200",
         icon: CheckCircle2,
         label: "Published",
       },
-      failed: { color: "bg-red-500/20 text-red-400", icon: XCircle, label: "Failed" },
+      failed: { color: "bg-red-50 text-red-700 border border-red-200", icon: XCircle, label: "Failed" },
     };
 
     const variant = variants[status];
@@ -157,8 +157,8 @@ export default function PublishPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-display font-bold text-white">Publishing Scheduler</h1>
-            <p className="text-grey-400 mt-1">Manage and schedule your content publications</p>
+            <h1 className="text-3xl font-display font-bold text-gray-900">Publishing Scheduler</h1>
+            <p className="text-gray-500 mt-1">Manage and schedule your content publications</p>
           </div>
           <div className="flex gap-2">
             <Button
@@ -188,11 +188,11 @@ export default function PublishPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="bg-grey-850 border-grey-700 p-4">
+          <Card className="bg-gray-50 border-gray-200 p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-grey-400">Scheduled</p>
-                <p className="text-2xl font-bold text-white mt-1">
+                <p className="text-sm text-gray-500">Scheduled</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">
                   {scheduledPosts.filter((p) => p.status === "scheduled").length}
                 </p>
               </div>
@@ -200,11 +200,11 @@ export default function PublishPage() {
             </div>
           </Card>
 
-          <Card className="bg-grey-850 border-grey-700 p-4">
+          <Card className="bg-gray-50 border-gray-200 p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-grey-400">Publishing</p>
-                <p className="text-2xl font-bold text-white mt-1">
+                <p className="text-sm text-gray-500">Publishing</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">
                   {scheduledPosts.filter((p) => p.status === "publishing").length}
                 </p>
               </div>
@@ -212,21 +212,21 @@ export default function PublishPage() {
             </div>
           </Card>
 
-          <Card className="bg-grey-850 border-grey-700 p-4">
+          <Card className="bg-gray-50 border-gray-200 p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-grey-400">Published Today</p>
-                <p className="text-2xl font-bold text-white mt-1">{publishedToday}</p>
+                <p className="text-sm text-gray-500">Published Today</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{publishedToday}</p>
               </div>
               <CheckCircle2 className="w-8 h-8 text-green-400" />
             </div>
           </Card>
 
-          <Card className="bg-grey-850 border-grey-700 p-4">
+          <Card className="bg-gray-50 border-gray-200 p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-grey-400">Failed</p>
-                <p className="text-2xl font-bold text-white mt-1">{failedCount}</p>
+                <p className="text-sm text-gray-500">Failed</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{failedCount}</p>
               </div>
               <XCircle className="w-8 h-8 text-red-400" />
             </div>
@@ -242,12 +242,12 @@ export default function PublishPage() {
             {view === "calendar" ? (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Calendar */}
-                <Card className="bg-grey-850 border-grey-700 p-6 lg:col-span-2">
+                <Card className="bg-gray-50 border-gray-200 p-6 lg:col-span-2">
                   <Calendar
                     mode="single"
                     selected={selectedDate}
                     onSelect={(date) => date && setSelectedDate(date)}
-                    className="rounded-md border-grey-600"
+                    className="rounded-md border-gray-300"
                     modifiers={{
                       hasPosts: (date) => {
                         const dateKey = startOfDay(date).toISOString();
@@ -263,19 +263,19 @@ export default function PublishPage() {
                     }}
                   />
 
-                  <div className="mt-4 text-xs text-grey-400">
+                  <div className="mt-4 text-xs text-gray-500">
                     Dates with scheduled posts are highlighted in gold
                   </div>
                 </Card>
 
                 {/* Posts on Selected Date */}
-                <Card className="bg-grey-850 border-grey-700 p-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">
+                <Card className="bg-gray-50 border-gray-200 p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
                     {format(selectedDate, "MMMM d, yyyy")}
                   </h3>
 
                   {postsOnSelectedDate.length === 0 ? (
-                    <p className="text-sm text-grey-400 text-center py-8">
+                    <p className="text-sm text-gray-500 text-center py-8">
                       No posts scheduled for this date
                     </p>
                   ) : (
@@ -283,17 +283,17 @@ export default function PublishPage() {
                       {postsOnSelectedDate.map((post) => (
                         <Card
                           key={post.id}
-                          className="bg-grey-900 border-grey-600 p-3 hover:border-gold-500/50 transition-colors"
+                          className="bg-white border-gray-300 p-3 hover:border-gold-500/50 transition-colors"
                         >
                           <div className="space-y-2">
                             <div className="flex items-start justify-between gap-2">
-                              <h4 className="text-sm font-medium text-white line-clamp-2">
+                              <h4 className="text-sm font-medium text-gray-900 line-clamp-2">
                                 {post.title}
                               </h4>
                               {getStatusBadge(post.status)}
                             </div>
 
-                            <div className="flex items-center gap-1 text-xs text-grey-400">
+                            <div className="flex items-center gap-1 text-xs text-gray-500">
                               <Clock className="w-3 h-3" />
                               {format(post.scheduledFor, "h:mm a")}
                             </div>
@@ -337,11 +337,11 @@ export default function PublishPage() {
               </div>
             ) : (
               /* List View */
-              <Card className="bg-grey-850 border-grey-700 p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Upcoming Posts</h3>
+              <Card className="bg-gray-50 border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Posts</h3>
 
                 {upcomingPosts.length === 0 ? (
-                  <p className="text-sm text-grey-400 text-center py-8">
+                  <p className="text-sm text-gray-500 text-center py-8">
                     No upcoming scheduled posts
                   </p>
                 ) : (
@@ -349,16 +349,16 @@ export default function PublishPage() {
                     {upcomingPosts.map((post) => (
                       <Card
                         key={post.id}
-                        className="bg-grey-900 border-grey-600 p-4 hover:border-gold-500/50 transition-colors"
+                        className="bg-white border-gray-300 p-4 hover:border-gold-500/50 transition-colors"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex-1">
                             <div className="flex items-start justify-between mb-2">
-                              <h4 className="text-base font-medium text-white">{post.title}</h4>
+                              <h4 className="text-base font-medium text-gray-900">{post.title}</h4>
                               {getStatusBadge(post.status)}
                             </div>
 
-                            <div className="flex items-center gap-4 text-sm text-grey-400">
+                            <div className="flex items-center gap-4 text-sm text-gray-500">
                               <div className="flex items-center gap-1">
                                 <CalendarIcon className="w-4 h-4" />
                                 {format(post.scheduledFor, "MMM d, yyyy")}
@@ -409,7 +409,7 @@ export default function PublishPage() {
               </Card>
             ) : view === "history" ? (
               /* History View */
-              <Card className="bg-grey-850 border-grey-700 p-6">
+              <Card className="bg-gray-50 border-gray-200 p-6">
                 <PublishHistory />
               </Card>
             ) : null}

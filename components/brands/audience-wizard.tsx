@@ -157,10 +157,10 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center font-medium transition-colors ${
                   i < step
-                    ? "bg-green-500 text-white"
+                    ? "bg-green-500 text-gray-900"
                     : i === step
-                    ? "bg-purple-500 text-white"
-                    : "bg-grey-700 text-grey-400"
+                    ? "bg-purple-500 text-gray-900"
+                    : "bg-gray-200 text-gray-500"
                 }`}
               >
                 {i < step ? <CheckCircle2 className="w-4 h-4" /> : i}
@@ -168,33 +168,33 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
               {i < 4 && (
                 <div
                   className={`w-12 h-1 transition-colors ${
-                    i < step ? "bg-green-500" : "bg-grey-700"
+                    i < step ? "bg-green-500" : "bg-gray-200"
                   }`}
                 />
               )}
             </div>
           ))}
         </div>
-        <span className="text-sm text-grey-400">Step {step} of 4</span>
+        <span className="text-sm text-gray-500">Step {step} of 4</span>
       </div>
 
       {/* Step Content */}
-      <Card className="bg-grey-850 border-grey-700 p-6">
+      <Card className="bg-gray-50 border-gray-200 p-6">
         {step === 1 && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-xl font-semibold text-white mb-2 flex items-center gap-2">
+              <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
                 <Users className="w-6 h-6 text-purple-500" />
                 Demographics
               </h3>
-              <p className="text-grey-400">
+              <p className="text-gray-500">
                 Define the basic characteristics of your target audience
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label className="text-grey-300 mb-2 block">
+                <Label className="text-gray-600 mb-2 block">
                   Age Range <span className="text-red-400">*</span>
                 </Label>
                 <Input
@@ -209,12 +209,12 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
                     })
                   }
                   placeholder="e.g., 25-45"
-                  className="bg-grey-900 border-grey-600 text-white"
+                  className="bg-white border-gray-300 text-gray-900"
                 />
               </div>
 
               <div>
-                <Label className="text-grey-300 mb-2 block">Primary Location</Label>
+                <Label className="text-gray-600 mb-2 block">Primary Location</Label>
                 <Input
                   value={audienceData.demographics.location}
                   onChange={(e) =>
@@ -227,12 +227,12 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
                     })
                   }
                   placeholder="e.g., United States, Urban areas"
-                  className="bg-grey-900 border-grey-600 text-white"
+                  className="bg-white border-gray-300 text-gray-900"
                 />
               </div>
 
               <div>
-                <Label className="text-grey-300 mb-2 block">Occupation/Industry</Label>
+                <Label className="text-gray-600 mb-2 block">Occupation/Industry</Label>
                 <Input
                   value={audienceData.demographics.occupation}
                   onChange={(e) =>
@@ -245,12 +245,12 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
                     })
                   }
                   placeholder="e.g., Tech professionals, Entrepreneurs"
-                  className="bg-grey-900 border-grey-600 text-white"
+                  className="bg-white border-gray-300 text-gray-900"
                 />
               </div>
 
               <div>
-                <Label className="text-grey-300 mb-2 block">Income Level</Label>
+                <Label className="text-gray-600 mb-2 block">Income Level</Label>
                 <Input
                   value={audienceData.demographics.income}
                   onChange={(e) =>
@@ -263,7 +263,7 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
                     })
                   }
                   placeholder="e.g., $50K-$150K annually"
-                  className="bg-grey-900 border-grey-600 text-white"
+                  className="bg-white border-gray-300 text-gray-900"
                 />
               </div>
             </div>
@@ -273,11 +273,11 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
         {step === 2 && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-xl font-semibold text-white mb-2 flex items-center gap-2">
+              <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
                 <Users className="w-6 h-6 text-purple-500" />
                 Psychographics
               </h3>
-              <p className="text-grey-400">
+              <p className="text-gray-500">
                 Understand their interests, values, and lifestyle
               </p>
             </div>
@@ -285,7 +285,7 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
             <div className="space-y-6">
               {/* Interests */}
               <div>
-                <Label className="text-grey-300 mb-2 block">
+                <Label className="text-gray-600 mb-2 block">
                   Interests <span className="text-red-400">*</span>
                 </Label>
                 <div className="flex gap-2 mb-2">
@@ -294,7 +294,7 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
                     onChange={(e) => setNewInterest(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && addInterest()}
                     placeholder="Add an interest..."
-                    className="bg-grey-900 border-grey-600 text-white"
+                    className="bg-white border-gray-300 text-gray-900"
                   />
                   <Button onClick={addInterest} className="bg-purple-500 hover:bg-purple-600">
                     <Plus className="w-4 h-4" />
@@ -319,14 +319,14 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
 
               {/* Values */}
               <div>
-                <Label className="text-grey-300 mb-2 block">Core Values</Label>
+                <Label className="text-gray-600 mb-2 block">Core Values</Label>
                 <div className="flex gap-2 mb-2">
                   <Input
                     value={newValue}
                     onChange={(e) => setNewValue(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && addValue()}
                     placeholder="Add a value..."
-                    className="bg-grey-900 border-grey-600 text-white"
+                    className="bg-white border-gray-300 text-gray-900"
                   />
                   <Button onClick={addValue} className="bg-purple-500 hover:bg-purple-600">
                     <Plus className="w-4 h-4" />
@@ -351,7 +351,7 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
 
               {/* Lifestyle */}
               <div>
-                <Label className="text-grey-300 mb-2 block">Lifestyle Description</Label>
+                <Label className="text-gray-600 mb-2 block">Lifestyle Description</Label>
                 <Textarea
                   value={audienceData.psychographics.lifestyle}
                   onChange={(e) =>
@@ -365,7 +365,7 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
                   }
                   placeholder="e.g., Busy professionals who value efficiency, health-conscious, tech-savvy..."
                   rows={4}
-                  className="bg-grey-900 border-grey-600 text-white"
+                  className="bg-white border-gray-300 text-gray-900"
                 />
               </div>
             </div>
@@ -375,17 +375,17 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
         {step === 3 && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-xl font-semibold text-white mb-2 flex items-center gap-2">
+              <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
                 <Users className="w-6 h-6 text-purple-500" />
                 Pain Points
               </h3>
-              <p className="text-grey-400">
+              <p className="text-gray-500">
                 What challenges or problems does your audience face?
               </p>
             </div>
 
             <div>
-              <Label className="text-grey-300 mb-2 block">
+              <Label className="text-gray-600 mb-2 block">
                 Add Pain Points <span className="text-red-400">*</span>
               </Label>
               <div className="flex gap-2 mb-4">
@@ -394,7 +394,7 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
                   onChange={(e) => setNewPainPoint(e.target.value)}
                   placeholder="Describe a pain point..."
                   rows={2}
-                  className="bg-grey-900 border-grey-600 text-white"
+                  className="bg-white border-gray-300 text-gray-900"
                 />
                 <Button
                   onClick={addPainPoint}
@@ -406,9 +406,9 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
 
               <div className="space-y-2">
                 {audienceData.painPoints.map((painPoint, index) => (
-                  <Card key={index} className="bg-grey-900 border-grey-600 p-3">
+                  <Card key={index} className="bg-white border-gray-300 p-3">
                     <div className="flex items-start justify-between gap-2">
-                      <p className="text-sm text-white flex-1">{painPoint}</p>
+                      <p className="text-sm text-gray-900 flex-1">{painPoint}</p>
                       <Button
                         size="sm"
                         variant="ghost"
@@ -428,11 +428,11 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
         {step === 4 && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-xl font-semibold text-white mb-2 flex items-center gap-2">
+              <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
                 <Users className="w-6 h-6 text-purple-500" />
                 Goals & Behaviors
               </h3>
-              <p className="text-grey-400">
+              <p className="text-gray-500">
                 What are they trying to achieve and how do they behave?
               </p>
             </div>
@@ -440,7 +440,7 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
             <div className="space-y-6">
               {/* Goals */}
               <div>
-                <Label className="text-grey-300 mb-2 block">
+                <Label className="text-gray-600 mb-2 block">
                   Goals & Aspirations <span className="text-red-400">*</span>
                 </Label>
                 <div className="flex gap-2 mb-4">
@@ -449,7 +449,7 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
                     onChange={(e) => setNewGoal(e.target.value)}
                     placeholder="Describe a goal..."
                     rows={2}
-                    className="bg-grey-900 border-grey-600 text-white"
+                    className="bg-white border-gray-300 text-gray-900"
                   />
                   <Button
                     onClick={addGoal}
@@ -461,9 +461,9 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
 
                 <div className="space-y-2">
                   {audienceData.goals.map((goal, index) => (
-                    <Card key={index} className="bg-grey-900 border-grey-600 p-3">
+                    <Card key={index} className="bg-white border-gray-300 p-3">
                       <div className="flex items-start justify-between gap-2">
-                        <p className="text-sm text-white flex-1">{goal}</p>
+                        <p className="text-sm text-gray-900 flex-1">{goal}</p>
                         <Button
                           size="sm"
                           variant="ghost"
@@ -480,7 +480,7 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
 
               {/* Behaviors */}
               <div>
-                <Label className="text-grey-300 mb-2 block">Online Behaviors</Label>
+                <Label className="text-gray-600 mb-2 block">Online Behaviors</Label>
                 <Textarea
                   value={audienceData.behaviors}
                   onChange={(e) =>
@@ -488,7 +488,7 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
                   }
                   placeholder="e.g., Active on LinkedIn, consumes content early morning, prefers video over text..."
                   rows={4}
-                  className="bg-grey-900 border-grey-600 text-white"
+                  className="bg-white border-gray-300 text-gray-900"
                 />
               </div>
             </div>
@@ -511,7 +511,7 @@ export function AudienceWizard({ onComplete, initialData }: AudienceWizardProps)
         <Button
           onClick={handleNext}
           disabled={!canProceed()}
-          className="bg-purple-500 hover:bg-purple-600 text-white gap-2"
+          className="bg-purple-500 hover:bg-purple-600 text-gray-900 gap-2"
         >
           {step === 4 ? "Complete" : "Next"}
           {step < 4 && <ChevronRight className="w-4 h-4" />}

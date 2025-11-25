@@ -45,7 +45,7 @@ export function UsageMetrics({ timeRange, brandId }: UsageMetricsProps) {
 
   if (loading) {
     return (
-      <Card className="bg-grey-850 border-grey-700 p-6">
+      <Card className="bg-gray-50 border-gray-200 p-6">
         <div className="flex items-center justify-center py-12">
           <Loader2 className="w-8 h-8 animate-spin text-gold-500" />
         </div>
@@ -64,11 +64,11 @@ export function UsageMetrics({ timeRange, brandId }: UsageMetricsProps) {
     <div className="grid grid-cols-1 gap-6">
       {/* Overview Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-grey-850 border-grey-700 p-6">
+        <Card className="bg-gray-50 border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-grey-400">Total Requests</p>
-              <p className="text-3xl font-bold text-white mt-2">
+              <p className="text-sm text-gray-500">Total Requests</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
                 {usageData.totalRequests.toLocaleString()}
               </p>
             </div>
@@ -76,11 +76,11 @@ export function UsageMetrics({ timeRange, brandId }: UsageMetricsProps) {
           </div>
         </Card>
 
-        <Card className="bg-grey-850 border-grey-700 p-6">
+        <Card className="bg-gray-50 border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-grey-400">Total Tokens</p>
-              <p className="text-3xl font-bold text-white mt-2">
+              <p className="text-sm text-gray-500">Total Tokens</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
                 {(usageData.totalTokens / 1000000).toFixed(2)}M
               </p>
             </div>
@@ -88,11 +88,11 @@ export function UsageMetrics({ timeRange, brandId }: UsageMetricsProps) {
           </div>
         </Card>
 
-        <Card className="bg-grey-850 border-grey-700 p-6">
+        <Card className="bg-gray-50 border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-grey-400">Avg Tokens/Request</p>
-              <p className="text-3xl font-bold text-white mt-2">
+              <p className="text-sm text-gray-500">Avg Tokens/Request</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
                 {Math.round(usageData.totalTokens / usageData.totalRequests || 0).toLocaleString()}
               </p>
             </div>
@@ -102,17 +102,17 @@ export function UsageMetrics({ timeRange, brandId }: UsageMetricsProps) {
       </div>
 
       {/* Usage by Category */}
-      <Card className="bg-grey-850 border-grey-700 p-6">
-        <h3 className="text-lg font-semibold text-white mb-6">Usage by Category</h3>
+      <Card className="bg-gray-50 border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-6">Usage by Category</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {usageData.byCategory.map((category: any) => {
             const Icon = categoryIcons[category.id] || Zap;
             return (
-              <Card key={category.id} className="bg-grey-900 border-grey-600 p-4">
+              <Card key={category.id} className="bg-white border-gray-300 p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <Icon className="w-6 h-6 text-gold-500" />
-                    <span className="font-medium text-white capitalize">
+                    <span className="font-medium text-gray-900 capitalize">
                       {category.name.replace("_", " ")}
                     </span>
                   </div>
@@ -123,19 +123,19 @@ export function UsageMetrics({ timeRange, brandId }: UsageMetricsProps) {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-grey-400">Tokens Used</span>
-                    <span className="text-white font-medium">
+                    <span className="text-gray-500">Tokens Used</span>
+                    <span className="text-gray-900 font-medium">
                       {(category.tokens / 1000).toFixed(1)}K
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-grey-400">Avg Cost</span>
-                    <span className="text-white font-medium">${category.avgCost.toFixed(3)}</span>
+                    <span className="text-gray-500">Avg Cost</span>
+                    <span className="text-gray-900 font-medium">${category.avgCost.toFixed(3)}</span>
                   </div>
                 </div>
 
                 <div className="mt-3">
-                  <div className="w-full bg-grey-700 rounded-full h-2">
+                  <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
                       className="bg-gold-500 h-2 rounded-full transition-all"
                       style={{
@@ -143,7 +143,7 @@ export function UsageMetrics({ timeRange, brandId }: UsageMetricsProps) {
                       }}
                     />
                   </div>
-                  <p className="text-xs text-grey-500 mt-1">
+                  <p className="text-xs text-gray-400 mt-1">
                     {((category.requests / usageData.totalRequests) * 100).toFixed(1)}% of total
                   </p>
                 </div>
@@ -154,8 +154,8 @@ export function UsageMetrics({ timeRange, brandId }: UsageMetricsProps) {
       </Card>
 
       {/* Usage Trend */}
-      <Card className="bg-grey-850 border-grey-700 p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Request Volume</h3>
+      <Card className="bg-gray-50 border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Request Volume</h3>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart data={usageData.trend}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -176,8 +176,8 @@ export function UsageMetrics({ timeRange, brandId }: UsageMetricsProps) {
       </Card>
 
       {/* Token Usage Trend */}
-      <Card className="bg-grey-850 border-grey-700 p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Token Consumption</h3>
+      <Card className="bg-gray-50 border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Token Consumption</h3>
         <ResponsiveContainer width="100%" height={250}>
           <LineChart data={usageData.trend}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -204,30 +204,30 @@ export function UsageMetrics({ timeRange, brandId }: UsageMetricsProps) {
       </Card>
 
       {/* Provider Breakdown */}
-      <Card className="bg-grey-850 border-grey-700 p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Usage by Provider</h3>
+      <Card className="bg-gray-50 border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Usage by Provider</h3>
         <div className="space-y-3">
           {usageData.byProvider.map((provider: any) => (
             <div
               key={provider.name}
-              className="flex items-center justify-between p-3 bg-grey-900 border border-grey-600 rounded-lg"
+              className="flex items-center justify-between p-3 bg-white border border-gray-300 rounded-lg"
             >
               <div className="flex items-center gap-3 flex-1">
-                <span className="font-medium text-white">{provider.name}</span>
-                <Badge variant="outline" className="bg-purple-500/20 text-purple-400">
+                <span className="font-medium text-gray-900">{provider.name}</span>
+                <Badge variant="outline" className="bg-purple-50 text-purple-700 border border-purple-200">
                   {provider.requests} requests
                 </Badge>
               </div>
               <div className="flex items-center gap-6">
                 <div className="text-right">
-                  <p className="text-xs text-grey-400">Tokens</p>
-                  <p className="text-sm font-medium text-white">
+                  <p className="text-xs text-gray-500">Tokens</p>
+                  <p className="text-sm font-medium text-gray-900">
                     {(provider.tokens / 1000).toFixed(1)}K
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-grey-400">Cost</p>
-                  <p className="text-sm font-medium text-white">${provider.cost.toFixed(2)}</p>
+                  <p className="text-xs text-gray-500">Cost</p>
+                  <p className="text-sm font-medium text-gray-900">${provider.cost.toFixed(2)}</p>
                 </div>
               </div>
             </div>

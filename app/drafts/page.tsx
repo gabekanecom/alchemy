@@ -121,31 +121,31 @@ export default function DraftsPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
+            <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
               <FileText className="w-8 h-8 text-gold-500" />
               Drafts
             </h1>
-            <p className="text-grey-400 mt-1">Manage your unpublished content</p>
+            <p className="text-gray-500 mt-1">Manage your unpublished content</p>
           </div>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="bg-grey-850 border-grey-700 p-4">
+          <Card className="bg-gray-50 border-gray-200 p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-grey-400">Total Drafts</p>
-                <p className="text-2xl font-bold text-white mt-1">{drafts.length}</p>
+                <p className="text-sm text-gray-500">Total Drafts</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{drafts.length}</p>
               </div>
               <FileText className="w-8 h-8 text-gold-500" />
             </div>
           </Card>
 
-          <Card className="bg-grey-850 border-grey-700 p-4">
+          <Card className="bg-gray-50 border-gray-200 p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-grey-400">Words Written</p>
-                <p className="text-2xl font-bold text-white mt-1">
+                <p className="text-sm text-gray-500">Words Written</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">
                   {drafts.reduce((sum, d) => sum + d.wordCount, 0).toLocaleString()}
                 </p>
               </div>
@@ -153,11 +153,11 @@ export default function DraftsPage() {
             </div>
           </Card>
 
-          <Card className="bg-grey-850 border-grey-700 p-4">
+          <Card className="bg-gray-50 border-gray-200 p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-grey-400">Updated Today</p>
-                <p className="text-2xl font-bold text-white mt-1">
+                <p className="text-sm text-gray-500">Updated Today</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">
                   {
                     drafts.filter(
                       (d) =>
@@ -172,17 +172,17 @@ export default function DraftsPage() {
         </div>
 
         {/* Filters */}
-        <Card className="bg-grey-850 border-grey-700 p-4">
+        <Card className="bg-gray-50 border-gray-200 p-4">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-grey-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
               <Input
                 type="text"
                 placeholder="Search drafts..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-grey-900 border-grey-600 text-white"
+                className="pl-10 bg-white border-gray-300 text-gray-900"
               />
             </div>
 
@@ -190,7 +190,7 @@ export default function DraftsPage() {
             <select
               value={filterPlatform}
               onChange={(e) => setFilterPlatform(e.target.value)}
-              className="px-4 py-2 bg-grey-900 border border-grey-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-gold-500"
+              className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-gold-500"
             >
               {platforms.map((platform) => (
                 <option key={platform} value={platform}>
@@ -209,11 +209,11 @@ export default function DraftsPage() {
             <Loader2 className="w-8 h-8 animate-spin text-gold-500" />
           </div>
         ) : filteredDrafts.length === 0 ? (
-          <Card className="bg-grey-850 border-grey-700 p-12">
+          <Card className="bg-gray-50 border-gray-200 p-12">
             <div className="text-center">
               <FileText className="w-16 h-16 text-grey-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">No Drafts Found</h3>
-              <p className="text-grey-400 mb-6">
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Drafts Found</h3>
+              <p className="text-gray-500 mb-6">
                 {searchQuery || filterPlatform !== "all"
                   ? "Try adjusting your filters"
                   : "Start creating content to see drafts here"}
@@ -225,22 +225,22 @@ export default function DraftsPage() {
             {filteredDrafts.map((draft) => (
               <Card
                 key={draft.id}
-                className="bg-grey-850 border-grey-700 p-6 hover:border-gold-500/50 transition-colors"
+                className="bg-gray-50 border-gray-200 p-6 hover:border-gold-500/50 transition-colors"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <span className="text-2xl">{getPlatformIcon(draft.platform)}</span>
                       <div>
-                        <h3 className="text-lg font-semibold text-white">{draft.title}</h3>
+                        <h3 className="text-lg font-semibold text-gray-900">{draft.title}</h3>
                         <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="outline" className="bg-grey-500/20 text-grey-400">
+                          <Badge variant="outline" className="bg-grey-500/20 text-gray-500">
                             {draft.platform}
                           </Badge>
-                          <Badge variant="outline" className="bg-blue-500/20 text-blue-400">
+                          <Badge variant="outline" className="bg-blue-50 text-blue-700 border border-blue-200">
                             {draft.brand.name}
                           </Badge>
-                          <span className="text-xs text-grey-400">
+                          <span className="text-xs text-gray-500">
                             {draft.wordCount} words
                           </span>
                         </div>
@@ -248,12 +248,12 @@ export default function DraftsPage() {
                     </div>
 
                     {draft.excerpt && (
-                      <p className="text-sm text-grey-400 line-clamp-2 mb-3">
+                      <p className="text-sm text-gray-500 line-clamp-2 mb-3">
                         {draft.excerpt}
                       </p>
                     )}
 
-                    <div className="flex items-center gap-4 text-xs text-grey-500">
+                    <div className="flex items-center gap-4 text-xs text-gray-400">
                       <span>Created {format(draft.createdAt, "MMM d, yyyy")}</span>
                       <span>•</span>
                       <span>Updated {format(draft.updatedAt, "MMM d, yyyy 'at' h:mm a")}</span>

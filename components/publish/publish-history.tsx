@@ -82,7 +82,7 @@ export function PublishHistory() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-white">Publishing History</h3>
+        <h3 className="text-lg font-semibold text-gray-900">Publishing History</h3>
         <Button
           size="sm"
           variant="outline"
@@ -98,34 +98,34 @@ export function PublishHistory() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         <Card
-          className={`bg-grey-900 border p-3 cursor-pointer transition-colors ${
-            filter === "all" ? "border-gold-500" : "border-grey-600 hover:border-grey-500"
+          className={`bg-white border p-3 cursor-pointer transition-colors ${
+            filter === "all" ? "border-gold-500" : "border-gray-300 hover:border-gray-400"
           }`}
           onClick={() => setFilter("all")}
         >
-          <p className="text-xs text-grey-400">Total</p>
-          <p className="text-xl font-bold text-white">{history.length}</p>
+          <p className="text-xs text-gray-500">Total</p>
+          <p className="text-xl font-bold text-gray-900">{history.length}</p>
         </Card>
 
         <Card
-          className={`bg-grey-900 border p-3 cursor-pointer transition-colors ${
+          className={`bg-white border p-3 cursor-pointer transition-colors ${
             filter === "published"
               ? "border-green-500"
-              : "border-grey-600 hover:border-grey-500"
+              : "border-gray-300 hover:border-gray-400"
           }`}
           onClick={() => setFilter("published")}
         >
-          <p className="text-xs text-grey-400">Published</p>
+          <p className="text-xs text-gray-500">Published</p>
           <p className="text-xl font-bold text-green-400">{publishedCount}</p>
         </Card>
 
         <Card
-          className={`bg-grey-900 border p-3 cursor-pointer transition-colors ${
-            filter === "failed" ? "border-red-500" : "border-grey-600 hover:border-grey-500"
+          className={`bg-white border p-3 cursor-pointer transition-colors ${
+            filter === "failed" ? "border-red-500" : "border-gray-300 hover:border-gray-400"
           }`}
           onClick={() => setFilter("failed")}
         >
-          <p className="text-xs text-grey-400">Failed</p>
+          <p className="text-xs text-gray-500">Failed</p>
           <p className="text-xl font-bold text-red-400">{failedCount}</p>
         </Card>
       </div>
@@ -133,8 +133,8 @@ export function PublishHistory() {
       {/* History List */}
       <div className="space-y-2 max-h-[500px] overflow-y-auto">
         {filteredHistory.length === 0 ? (
-          <Card className="bg-grey-900 border-grey-600 p-6">
-            <p className="text-sm text-grey-400 text-center">
+          <Card className="bg-white border-gray-300 p-6">
+            <p className="text-sm text-gray-500 text-center">
               {filter === "all"
                 ? "No publishing history yet"
                 : `No ${filter} publications`}
@@ -144,25 +144,25 @@ export function PublishHistory() {
           filteredHistory.map((item) => (
             <Card
               key={item.id}
-              className="bg-grey-900 border-grey-600 p-4 hover:border-gold-500/50 transition-colors"
+              className="bg-white border-gray-300 p-4 hover:border-gold-500/50 transition-colors"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-lg">{getPlatformIcon(item.platform)}</span>
-                    <h4 className="text-sm font-medium text-white line-clamp-1">
+                    <h4 className="text-sm font-medium text-gray-900 line-clamp-1">
                       {item.contentTitle}
                     </h4>
                   </div>
 
                   <div className="flex items-center gap-2 mb-2">
-                    <Badge variant="outline" className="text-xs bg-grey-500/20 text-grey-400">
+                    <Badge variant="outline" className="text-xs bg-grey-500/20 text-gray-500">
                       {item.platform}
                     </Badge>
                     {item.status === "published" ? (
                       <Badge
                         variant="outline"
-                        className="text-xs bg-green-500/20 text-green-400 border-green-500/30"
+                        className="text-xs bg-green-50 text-green-700 border border-green-200 border-green-500/30"
                       >
                         <CheckCircle2 className="w-3 h-3 mr-1" />
                         Published
@@ -170,7 +170,7 @@ export function PublishHistory() {
                     ) : (
                       <Badge
                         variant="outline"
-                        className="text-xs bg-red-500/20 text-red-400 border-red-500/30"
+                        className="text-xs bg-red-50 text-red-700 border border-red-200 border-red-500/30"
                       >
                         <XCircle className="w-3 h-3 mr-1" />
                         Failed
@@ -179,7 +179,7 @@ export function PublishHistory() {
                   </div>
 
                   {item.publishedAt && (
-                    <p className="text-xs text-grey-500">
+                    <p className="text-xs text-gray-400">
                       {format(item.publishedAt, "MMM d, yyyy 'at' h:mm a")}
                     </p>
                   )}

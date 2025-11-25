@@ -38,7 +38,7 @@ export function PerformanceChart({ timeRange, brandId }: PerformanceChartProps) 
 
   if (loading) {
     return (
-      <Card className="bg-grey-850 border-grey-700 p-6">
+      <Card className="bg-gray-50 border-gray-200 p-6">
         <div className="flex items-center justify-center py-12">
           <Loader2 className="w-8 h-8 animate-spin text-gold-500" />
         </div>
@@ -49,8 +49,8 @@ export function PerformanceChart({ timeRange, brandId }: PerformanceChartProps) 
   return (
     <div className="grid grid-cols-1 gap-6">
       {/* Views and Engagement Over Time */}
-      <Card className="bg-grey-850 border-grey-700 p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Views & Engagement</h3>
+      <Card className="bg-gray-50 border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Views & Engagement</h3>
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart data={data}>
             <defs>
@@ -96,8 +96,8 @@ export function PerformanceChart({ timeRange, brandId }: PerformanceChartProps) 
       </Card>
 
       {/* Conversion Rate */}
-      <Card className="bg-grey-850 border-grey-700 p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Conversion Rate</h3>
+      <Card className="bg-gray-50 border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Conversion Rate</h3>
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />

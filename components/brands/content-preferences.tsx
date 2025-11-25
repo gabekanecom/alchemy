@@ -74,23 +74,23 @@ export function ContentPreferences({ preferences, onChange }: ContentPreferences
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-xl font-semibold text-white mb-2 flex items-center gap-2">
+        <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
           <Settings className="w-6 h-6 text-blue-500" />
           Content Preferences
         </h3>
-        <p className="text-grey-400">
+        <p className="text-gray-500">
           Configure what content to focus on and what to avoid
         </p>
       </div>
 
       {/* Preferred Topics */}
-      <Card className="bg-grey-850 border-grey-700 p-6">
+      <Card className="bg-gray-50 border-gray-200 p-6">
         <div className="space-y-4">
           <div>
-            <Label className="text-grey-300 mb-2 block text-base font-semibold">
+            <Label className="text-gray-600 mb-2 block text-base font-semibold">
               Preferred Topics
             </Label>
-            <p className="text-sm text-grey-400 mb-3">
+            <p className="text-sm text-gray-500 mb-3">
               Topics and themes to focus on in content generation
             </p>
             <div className="flex gap-2 mb-3">
@@ -99,7 +99,7 @@ export function ContentPreferences({ preferences, onChange }: ContentPreferences
                 onChange={(e) => setNewTopic(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && addTopic()}
                 placeholder="Add a topic..."
-                className="bg-grey-900 border-grey-600 text-white"
+                className="bg-white border-gray-300 text-gray-900"
               />
               <Button onClick={addTopic} className="bg-blue-500 hover:bg-blue-600">
                 <Plus className="w-4 h-4" />
@@ -125,13 +125,13 @@ export function ContentPreferences({ preferences, onChange }: ContentPreferences
       </Card>
 
       {/* Avoided Topics */}
-      <Card className="bg-grey-850 border-grey-700 p-6">
+      <Card className="bg-gray-50 border-gray-200 p-6">
         <div className="space-y-4">
           <div>
-            <Label className="text-grey-300 mb-2 block text-base font-semibold">
+            <Label className="text-gray-600 mb-2 block text-base font-semibold">
               Topics to Avoid
             </Label>
-            <p className="text-sm text-grey-400 mb-3">
+            <p className="text-sm text-gray-500 mb-3">
               Topics, themes, or subjects that should never be covered
             </p>
             <div className="flex gap-2 mb-3">
@@ -140,7 +140,7 @@ export function ContentPreferences({ preferences, onChange }: ContentPreferences
                 onChange={(e) => setNewAvoidedTopic(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && addAvoidedTopic()}
                 placeholder="Add a topic to avoid..."
-                className="bg-grey-900 border-grey-600 text-white"
+                className="bg-white border-gray-300 text-gray-900"
               />
               <Button onClick={addAvoidedTopic} className="bg-red-500 hover:bg-red-600">
                 <Plus className="w-4 h-4" />
@@ -155,7 +155,7 @@ export function ContentPreferences({ preferences, onChange }: ContentPreferences
                 >
                   {topic}
                   <X
-                    className="w-3 h-3 cursor-pointer hover:text-grey-400"
+                    className="w-3 h-3 cursor-pointer hover:text-gray-500"
                     onClick={() => removeAvoidedTopic(index)}
                   />
                 </Badge>
@@ -166,13 +166,13 @@ export function ContentPreferences({ preferences, onChange }: ContentPreferences
       </Card>
 
       {/* Call-to-Actions */}
-      <Card className="bg-grey-850 border-grey-700 p-6">
+      <Card className="bg-gray-50 border-gray-200 p-6">
         <div className="space-y-4">
           <div>
-            <Label className="text-grey-300 mb-2 block text-base font-semibold">
+            <Label className="text-gray-600 mb-2 block text-base font-semibold">
               Preferred CTAs
             </Label>
-            <p className="text-sm text-grey-400 mb-3">
+            <p className="text-sm text-gray-500 mb-3">
               Call-to-actions to use in your content
             </p>
             <div className="flex gap-2 mb-3">
@@ -181,7 +181,7 @@ export function ContentPreferences({ preferences, onChange }: ContentPreferences
                 onChange={(e) => setNewCTA(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && addCTA()}
                 placeholder="e.g., Book a demo, Download our guide..."
-                className="bg-grey-900 border-grey-600 text-white"
+                className="bg-white border-gray-300 text-gray-900"
               />
               <Button onClick={addCTA} className="bg-green-500 hover:bg-green-600">
                 <Plus className="w-4 h-4" />
@@ -207,17 +207,17 @@ export function ContentPreferences({ preferences, onChange }: ContentPreferences
       </Card>
 
       {/* Formatting Preferences */}
-      <Card className="bg-grey-850 border-grey-700 p-6">
+      <Card className="bg-gray-50 border-gray-200 p-6">
         <div className="space-y-4">
-          <Label className="text-grey-300 mb-2 block text-base font-semibold">
+          <Label className="text-gray-600 mb-2 block text-base font-semibold">
             Formatting Preferences
           </Label>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <Label className="text-white">Use Emojis</Label>
-                <p className="text-sm text-grey-400">Include emojis in content</p>
+                <Label className="text-gray-900">Use Emojis</Label>
+                <p className="text-sm text-gray-500">Include emojis in content</p>
               </div>
               <Switch
                 checked={preferences.formatting?.useEmojis || false}
@@ -232,8 +232,8 @@ export function ContentPreferences({ preferences, onChange }: ContentPreferences
 
             <div className="flex items-center justify-between">
               <div>
-                <Label className="text-white">Use Hashtags</Label>
-                <p className="text-sm text-grey-400">Include relevant hashtags</p>
+                <Label className="text-gray-900">Use Hashtags</Label>
+                <p className="text-sm text-gray-500">Include relevant hashtags</p>
               </div>
               <Switch
                 checked={preferences.formatting?.useHashtags || false}
@@ -248,8 +248,8 @@ export function ContentPreferences({ preferences, onChange }: ContentPreferences
 
             <div className="flex items-center justify-between">
               <div>
-                <Label className="text-white">Use Bullet Points</Label>
-                <p className="text-sm text-grey-400">Prefer bulleted lists for readability</p>
+                <Label className="text-gray-900">Use Bullet Points</Label>
+                <p className="text-sm text-gray-500">Prefer bulleted lists for readability</p>
               </div>
               <Switch
                 checked={preferences.formatting?.useBullets || true}
@@ -264,8 +264,8 @@ export function ContentPreferences({ preferences, onChange }: ContentPreferences
 
             <div className="flex items-center justify-between">
               <div>
-                <Label className="text-white">Include Statistics</Label>
-                <p className="text-sm text-grey-400">Reference data and statistics when relevant</p>
+                <Label className="text-gray-900">Include Statistics</Label>
+                <p className="text-sm text-gray-500">Reference data and statistics when relevant</p>
               </div>
               <Switch
                 checked={preferences.formatting?.includeStats || true}
@@ -282,9 +282,9 @@ export function ContentPreferences({ preferences, onChange }: ContentPreferences
       </Card>
 
       {/* Additional Guidelines */}
-      <Card className="bg-grey-850 border-grey-700 p-6">
+      <Card className="bg-gray-50 border-gray-200 p-6">
         <div className="space-y-4">
-          <Label className="text-grey-300 mb-2 block text-base font-semibold">
+          <Label className="text-gray-600 mb-2 block text-base font-semibold">
             Additional Guidelines
           </Label>
           <Textarea
@@ -294,7 +294,7 @@ export function ContentPreferences({ preferences, onChange }: ContentPreferences
             }
             placeholder="Any other content preferences or guidelines..."
             rows={4}
-            className="bg-grey-900 border-grey-600 text-white"
+            className="bg-white border-gray-300 text-gray-900"
           />
         </div>
       </Card>

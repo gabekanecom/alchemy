@@ -138,7 +138,7 @@ export function BulkGenerateModal({
   function getStatusIcon(status: GenerationJob["status"]) {
     switch (status) {
       case "pending":
-        return <Clock className="w-4 h-4 text-grey-400" />;
+        return <Clock className="w-4 h-4 text-gray-500" />;
       case "processing":
         return <Loader2 className="w-4 h-4 text-purple-400 animate-spin" />;
       case "completed":
@@ -151,13 +151,13 @@ export function BulkGenerateModal({
   function getStatusColor(status: GenerationJob["status"]) {
     switch (status) {
       case "pending":
-        return "bg-grey-500/20 text-grey-400";
+        return "bg-grey-500/20 text-gray-500";
       case "processing":
-        return "bg-purple-500/20 text-purple-400";
+        return "bg-purple-50 text-purple-700 border border-purple-200";
       case "completed":
-        return "bg-green-500/20 text-green-400";
+        return "bg-green-50 text-green-700 border border-green-200";
       case "failed":
-        return "bg-red-500/20 text-red-400";
+        return "bg-red-50 text-red-700 border border-red-200";
     }
   }
 
@@ -166,13 +166,13 @@ export function BulkGenerateModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-grey-900 border-grey-700 text-white max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="bg-white border-gray-200 text-gray-900 max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-display flex items-center gap-2">
             <Zap className="w-6 h-6 text-gold-500" />
             Generate Content from Ideas
           </DialogTitle>
-          <DialogDescription className="text-grey-300">
+          <DialogDescription className="text-gray-600">
             {ideaIds.length === 1
               ? "Generate content from 1 idea"
               : `Generate content from ${ideaIds.length} ideas`}
@@ -191,9 +191,9 @@ export function BulkGenerateModal({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Content Type */}
                   <div>
-                    <Label className="text-grey-300 mb-2 block">Content Type</Label>
+                    <Label className="text-gray-600 mb-2 block">Content Type</Label>
                     <Select value={contentType} onValueChange={setContentType}>
-                      <SelectTrigger className="bg-grey-900 border-grey-600 text-white">
+                      <SelectTrigger className="bg-white border-gray-300 text-gray-900">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -208,9 +208,9 @@ export function BulkGenerateModal({
 
                   {/* Platform */}
                   <div>
-                    <Label className="text-grey-300 mb-2 block">Platform</Label>
+                    <Label className="text-gray-600 mb-2 block">Platform</Label>
                     <Select value={platform} onValueChange={setPlatform}>
-                      <SelectTrigger className="bg-grey-900 border-grey-600 text-white">
+                      <SelectTrigger className="bg-white border-gray-300 text-gray-900">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -231,21 +231,21 @@ export function BulkGenerateModal({
                     checked={generateImages}
                     onCheckedChange={(checked) => setGenerateImages(checked as boolean)}
                   />
-                  <Label htmlFor="generateImages" className="text-grey-300 cursor-pointer">
+                  <Label htmlFor="generateImages" className="text-gray-600 cursor-pointer">
                     Generate images for content
                   </Label>
                 </div>
 
                 {/* Ideas Preview */}
                 <div>
-                  <Label className="text-grey-300 mb-2 block">
+                  <Label className="text-gray-600 mb-2 block">
                     Ideas to Generate ({ideas.length})
                   </Label>
-                  <div className="space-y-2 max-h-48 overflow-y-auto bg-grey-850 border border-grey-600 rounded-lg p-3">
+                  <div className="space-y-2 max-h-48 overflow-y-auto bg-gray-50 border border-gray-300 rounded-lg p-3">
                     {ideas.map((idea) => (
                       <div
                         key={idea.id}
-                        className="text-sm text-grey-300 flex items-center gap-2"
+                        className="text-sm text-gray-600 flex items-center gap-2"
                       >
                         <div className="w-2 h-2 rounded-full bg-gold-500" />
                         {idea.title}
@@ -270,8 +270,8 @@ export function BulkGenerateModal({
             {jobs.length > 0 && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <Label className="text-grey-300">Generation Progress</Label>
-                  <div className="text-sm text-grey-400">
+                  <Label className="text-gray-600">Generation Progress</Label>
+                  <div className="text-sm text-gray-500">
                     {jobs.filter((j) => j.status === "completed").length} / {jobs.length}{" "}
                     completed
                   </div>
@@ -281,12 +281,12 @@ export function BulkGenerateModal({
                   {jobs.map((job) => (
                     <div
                       key={job.ideaId}
-                      className="bg-grey-850 border border-grey-600 rounded-lg p-4 flex items-center justify-between"
+                      className="bg-gray-50 border border-gray-300 rounded-lg p-4 flex items-center justify-between"
                     >
                       <div className="flex items-center gap-3 flex-1">
                         {getStatusIcon(job.status)}
                         <div className="flex-1">
-                          <p className="text-sm font-medium text-white">
+                          <p className="text-sm font-medium text-gray-900">
                             {job.ideaTitle}
                           </p>
                           {job.error && (
@@ -327,7 +327,7 @@ export function BulkGenerateModal({
                         onOpenChange(false);
                         setJobs([]);
                       }}
-                      className="w-full bg-grey-700 hover:bg-grey-600 text-white"
+                      className="w-full bg-gray-200 hover:bg-grey-600 text-gray-900"
                     >
                       Close
                     </Button>
