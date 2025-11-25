@@ -12,6 +12,9 @@ import {
   wordpressConfigSchema,
   linkedinConfigSchema,
   twitterConfigSchema,
+  ghostConfigSchema,
+  mediumConfigSchema,
+  instagramConfigSchema,
 } from "./types";
 
 // Provider client classes (to be implemented)
@@ -26,6 +29,9 @@ import { SanityClient } from "./clients/sanity";
 import { WordPressClient } from "./clients/wordpress";
 import { LinkedInClient } from "./clients/linkedin";
 import { TwitterClient } from "./clients/twitter";
+import { GhostClient } from "./clients/ghost";
+import { MediumClient } from "./clients/medium";
+import { InstagramClient } from "./clients/instagram";
 import { z } from "zod";
 
 /**
@@ -347,6 +353,63 @@ export const INTEGRATION_REGISTRY: Record<string, IntegrationProvider> = {
       tokenUrl: "https://api.twitter.com/2/oauth2/token",
       scopes: ["tweet.read", "tweet.write", "users.read", "offline.access"],
     },
+  },
+
+  instagram: {
+    id: "instagram",
+    category: "social_media",
+    name: "Instagram",
+    description: "Publish images, carousels, and reels to Instagram",
+    icon: "/integrations/instagram.svg",
+    website: "https://instagram.com",
+    capabilities: ["social_publishing"],
+    configSchema: instagramConfigSchema,
+    clientClass: InstagramClient,
+    pricing: {
+      model: "free",
+    },
+    setupInstructions: "Click 'Connect Instagram' below to authenticate via OAuth 2.0",
+    oauth: {
+      authUrl: "https://api.instagram.com/oauth/authorize",
+      tokenUrl: "https://api.instagram.com/oauth/access_token",
+      scopes: ["user_profile", "user_media"],
+    },
+  },
+
+  ghost: {
+    id: "ghost",
+    category: "publishing",
+    name: "Ghost CMS",
+    description: "Publish content to your Ghost blog or publication",
+    icon: "/integrations/ghost.svg",
+    website: "https://ghost.org",
+    capabilities: ["blog_publishing"],
+    configSchema: ghostConfigSchema,
+    clientClass: GhostClient,
+    pricing: {
+      model: "free",
+    },
+    setupInstructions:
+      "1. Log into your Ghost admin panel\n2. Go to Settings → Integrations\n3. Click 'Add custom integration'\n4. Copy the Admin API Key\n5. Paste your site URL and API key below",
+    setupUrl: "https://ghost.org/integrations/custom-integrations/",
+  },
+
+  medium: {
+    id: "medium",
+    category: "publishing",
+    name: "Medium",
+    description: "Publish stories to your Medium account or publications",
+    icon: "/integrations/medium.svg",
+    website: "https://medium.com",
+    capabilities: ["blog_publishing"],
+    configSchema: mediumConfigSchema,
+    clientClass: MediumClient,
+    pricing: {
+      model: "free",
+    },
+    setupInstructions:
+      "1. Go to medium.com/me/settings\n2. Scroll to 'Integration tokens'\n3. Enter a token description and click 'Get integration token'\n4. Copy and paste the token below",
+    setupUrl: "https://medium.com/me/settings",
   },
 };
 

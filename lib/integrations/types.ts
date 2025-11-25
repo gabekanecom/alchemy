@@ -173,3 +173,33 @@ export const runwayConfigSchema = z.object({
     style: z.string().optional(),
   }).default({}),
 });
+
+export const ghostConfigSchema = z.object({
+  siteUrl: z.string().url("Must be a valid URL"),
+  adminApiKey: z.string().min(1, "Admin API key is required"),
+  defaultSettings: z.object({
+    status: z.enum(["published", "draft", "scheduled"]).default("draft"),
+    visibility: z.enum(["public", "members", "paid"]).default("public"),
+  }).default({}),
+});
+
+export const mediumConfigSchema = z.object({
+  accessToken: z.string().min(1, "Access token is required"),
+  defaultSettings: z.object({
+    publishStatus: z.enum(["public", "draft", "unlisted"]).default("public"),
+    notifyFollowers: z.boolean().default(true),
+    contentFormat: z.enum(["html", "markdown"]).default("html"),
+  }).default({}),
+});
+
+export const instagramConfigSchema = z.object({
+  accessToken: z.string().min(1, "Access token is required"),
+  userId: z.string().min(1, "User ID is required"),
+  expiresAt: z.string().optional(),
+  username: z.string().optional(),
+  accountType: z.string().optional(),
+  defaultSettings: z.object({
+    postType: z.enum(["image", "carousel", "reel"]).default("image"),
+    shareToFeed: z.boolean().default(true),
+  }).default({}),
+});
