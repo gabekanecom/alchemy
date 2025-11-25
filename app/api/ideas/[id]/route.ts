@@ -33,7 +33,7 @@ export async function GET(
     }
 
     if (!idea) {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "NOT_FOUND",
@@ -53,7 +53,7 @@ export async function GET(
   } catch (error) {
     console.error(`GET /api/ideas/${id} error:`, error);
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",
@@ -81,12 +81,12 @@ export async function PATCH(
     // Validate request body
     const validation = UpdateIdeaSchema.safeParse(body);
     if (!validation.success) {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "VALIDATION_ERROR",
           message: "Invalid request data",
-          details: validation.error.errors,
+          details: validation.error.issues,
         },
       };
 
@@ -106,7 +106,7 @@ export async function PATCH(
 
     // Handle not found
     if (error.code === "P2025") {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "NOT_FOUND",
@@ -117,7 +117,7 @@ export async function PATCH(
       return NextResponse.json(errorResponse, { status: 404 });
     }
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",
@@ -154,7 +154,7 @@ export async function DELETE(
 
     // Handle not found
     if (error.code === "P2025") {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "NOT_FOUND",
@@ -165,7 +165,7 @@ export async function DELETE(
       return NextResponse.json(errorResponse, { status: 404 });
     }
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",

@@ -33,7 +33,7 @@ export async function GET(
     }
 
     if (!brand) {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "NOT_FOUND",
@@ -54,7 +54,7 @@ export async function GET(
     const { id } = await params;
     console.error(`GET /api/brands/${id} error:`, error);
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",
@@ -82,12 +82,12 @@ export async function PATCH(
     // Validate request body
     const validation = UpdateBrandSchema.safeParse(body);
     if (!validation.success) {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "VALIDATION_ERROR",
           message: "Invalid request data",
-          details: validation.error.errors,
+          details: validation.error.issues,
         },
       };
 
@@ -108,7 +108,7 @@ export async function PATCH(
 
     // Handle not found
     if (error.code === "P2025") {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "NOT_FOUND",
@@ -121,7 +121,7 @@ export async function PATCH(
 
     // Handle unique constraint violations
     if (error.code === "P2002") {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "DUPLICATE_ENTRY",
@@ -132,7 +132,7 @@ export async function PATCH(
       return NextResponse.json(errorResponse, { status: 409 });
     }
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",
@@ -170,7 +170,7 @@ export async function DELETE(
 
     // Handle not found
     if (error.code === "P2025") {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "NOT_FOUND",
@@ -181,7 +181,7 @@ export async function DELETE(
       return NextResponse.json(errorResponse, { status: 404 });
     }
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",

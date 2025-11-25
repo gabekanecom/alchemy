@@ -18,12 +18,10 @@ export async function GET(request: NextRequest) {
     const userId = getUserId();
     const { searchParams } = new URL(request.url);
 
-    const includeStats = searchParams.get("includeStats") === "true";
     const limit = parseInt(searchParams.get("limit") || "50");
     const offset = parseInt(searchParams.get("offset") || "0");
 
     const { brands, total } = await getBrandsByUserId(userId, {
-      includeStats,
       limit,
       offset,
     });
@@ -44,7 +42,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("GET /api/brands error:", error);
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",
@@ -68,12 +66,12 @@ export async function POST(request: NextRequest) {
     // Validate request body
     const validation = CreateBrandSchema.safeParse(body);
     if (!validation.success) {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "VALIDATION_ERROR",
           message: "Invalid request data",
-          details: validation.error.errors,
+          details: validation.error.issues,
         },
       };
 
@@ -93,7 +91,7 @@ export async function POST(request: NextRequest) {
 
     // Handle unique constraint violations (duplicate slug)
     if (error.code === "P2002") {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "DUPLICATE_ENTRY",
@@ -104,7 +102,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(errorResponse, { status: 409 });
     }
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",

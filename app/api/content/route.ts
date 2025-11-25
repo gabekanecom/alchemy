@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("GET /api/content error:", error);
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",

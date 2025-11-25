@@ -32,7 +32,7 @@ export async function GET(
     }
 
     if (!publication) {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "NOT_FOUND",
@@ -52,7 +52,7 @@ export async function GET(
   } catch (error) {
     console.error(`GET /api/publications/${id} error:`, error);
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",
@@ -90,7 +90,7 @@ export async function PATCH(
 
     // Handle not found
     if (error.code === "P2025") {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "NOT_FOUND",
@@ -101,7 +101,7 @@ export async function PATCH(
       return NextResponse.json(errorResponse, { status: 404 });
     }
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",
@@ -138,7 +138,7 @@ export async function DELETE(
 
     // Handle not found
     if (error.code === "P2025") {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "NOT_FOUND",
@@ -149,7 +149,7 @@ export async function DELETE(
       return NextResponse.json(errorResponse, { status: 404 });
     }
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",

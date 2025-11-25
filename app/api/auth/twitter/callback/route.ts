@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
     // Redirect back to integrations page with success message
     const successUrl = new URL("/settings/integrations", request.url);
     successUrl.searchParams.set("success", "twitter");
-    successUrl.searchParams.set("account", profile.name);
+    successUrl.searchParams.set("account", profile.data.username);
     return NextResponse.redirect(successUrl);
   } catch (error) {
     console.error("Twitter OAuth callback error:", error);

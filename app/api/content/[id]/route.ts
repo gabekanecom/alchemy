@@ -36,7 +36,7 @@ export async function GET(
     }
 
     if (!content) {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "NOT_FOUND",
@@ -48,22 +48,26 @@ export async function GET(
     }
 
     // Include versions if requested
-    let versions;
+    let response: ApiResponse<typeof content>;
     if (includeVersions) {
-      versions = await getContentVersions(id, userId);
+      const versions = await getContentVersions(id, userId);
+      response = {
+        success: true,
+        data: content,
+        meta: { versions } as any,
+      };
+    } else {
+      response = {
+        success: true,
+        data: content,
+      };
     }
-
-    const response: ApiResponse<typeof content> = {
-      success: true,
-      data: content,
-      ...(versions && { meta: { versions } }),
-    };
 
     return NextResponse.json(response);
   } catch (error) {
     console.error(`GET /api/content/${id} error:`, error);
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",
@@ -91,12 +95,12 @@ export async function PATCH(
     // Validate request body
     const validation = UpdateGeneratedContentSchema.safeParse(body);
     if (!validation.success) {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "VALIDATION_ERROR",
           message: "Invalid request data",
-          details: validation.error.errors,
+          details: validation.error.issues,
         },
       };
 
@@ -120,7 +124,7 @@ export async function PATCH(
 
     // Handle not found
     if (error.code === "P2025") {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "NOT_FOUND",
@@ -131,7 +135,7 @@ export async function PATCH(
       return NextResponse.json(errorResponse, { status: 404 });
     }
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",
@@ -168,7 +172,7 @@ export async function DELETE(
 
     // Handle not found
     if (error.code === "P2025") {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "NOT_FOUND",
@@ -179,7 +183,7 @@ export async function DELETE(
       return NextResponse.json(errorResponse, { status: 404 });
     }
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",
@@ -207,12 +211,12 @@ export async function POST(
     // Validate request body
     const validation = UpdateGeneratedContentSchema.safeParse(body);
     if (!validation.success) {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "VALIDATION_ERROR",
           message: "Invalid request data",
-          details: validation.error.errors,
+          details: validation.error.issues,
         },
       };
 
@@ -234,7 +238,7 @@ export async function POST(
   } catch (error: any) {
     console.error(`POST /api/content/${id}/versions error:`, error);
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",

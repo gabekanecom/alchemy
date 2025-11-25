@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const drafts = await prisma.content.findMany({
+    const drafts = await prisma.generatedContent.findMany({
       where: {
         brand: {
           userId: session.user.id,

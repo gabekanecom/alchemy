@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Content not found" }, { status: 404 });
       }
 
-      content = generatedContent.body;
+      content = generatedContent.body || undefined;
     }
 
     if (!content) {
@@ -71,27 +71,28 @@ export async function POST(request: NextRequest) {
       userId: user.id,
     });
 
-    // Save variations to database if contentId provided
-    if (contentId) {
-      await Promise.all(
-        variations.map(async (variation) => {
-          await prisma.contentVariation.create({
-            data: {
-              contentId,
-              userId: user.id,
-              type: variation.type,
-              content: variation.content,
-              framework: variation.framework,
-              metadata: {
-                reasoning: variation.reasoning,
-                predictedViralScore: variation.viralScore,
-              },
-              status: "testing",
-            },
-          });
-        })
-      );
-    }
+    // TODO: Save variations to database if contentId provided
+    // Note: ContentVariation model needs to be created in Prisma schema
+    // if (contentId) {
+    //   await Promise.all(
+    //     variations.map(async (variation) => {
+    //       await prisma.contentVariation.create({
+    //         data: {
+    //           contentId,
+    //           userId: user.id,
+    //           type: variation.type,
+    //           content: variation.content,
+    //           framework: variation.framework,
+    //           metadata: {
+    //             reasoning: variation.reasoning,
+    //             predictedViralScore: variation.viralScore,
+    //           },
+    //           status: "testing",
+    //         },
+    //       });
+    //     })
+    //   );
+    // }
 
     return NextResponse.json({
       success: true,
