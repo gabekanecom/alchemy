@@ -28,12 +28,27 @@ export default function IdeasPage() {
   const [loading, setLoading] = useState(true);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filters, setFilters] = useState({
-    brand: "all",
-    source: "all",
-    status: "all",
-    sortBy: "newest",
+
+  // Load filters from localStorage on mount
+  const [filters, setFilters] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('alchemy_ideas_filters');
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          console.error('Failed to parse saved filters:', e);
+        }
+      }
+    }
+    return {
+      brand: "all",
+      source: "all",
+      status: "all",
+      sortBy: "newest",
+    };
   });
+
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [generateForIdeas, setGenerateForIdeas] = useState<string[]>([]);
 
@@ -44,6 +59,13 @@ export default function IdeasPage() {
   useEffect(() => {
     applyFilters();
   }, [ideas, filters, searchQuery]);
+
+  // Persist filters to localStorage whenever they change
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('alchemy_ideas_filters', JSON.stringify(filters));
+    }
+  }, [filters]);
 
   async function fetchIdeas() {
     setLoading(true);

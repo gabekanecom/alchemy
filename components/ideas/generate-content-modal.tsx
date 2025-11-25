@@ -44,6 +44,9 @@ export function GenerateContentModal({
   // Platform-specific configs
   const [platformConfigs, setPlatformConfigs] = useState<Record<string, PlatformConfig>>({});
 
+  // Quick Mode toggle
+  const [quickMode, setQuickMode] = useState(true);
+
   // Advanced options
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [viralIntensity, setViralIntensity] = useState<"moderate" | "high" | "extreme">("high");
@@ -291,16 +294,38 @@ export function GenerateContentModal({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">Configure Generation</h2>
-            <p className="text-sm text-gray-600 mt-1">{ideaTitle}</p>
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 z-10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">Configure Generation</h2>
+              <p className="text-sm text-gray-600 mt-1">{ideaTitle}</p>
+            </div>
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600" disabled={isGenerating}>
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600" disabled={isGenerating}>
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+
+          {/* Quick Mode Toggle */}
+          <div className="mt-4 flex items-center justify-between p-3 bg-gradient-gold-light rounded-lg border border-gold-200">
+            <div>
+              <h3 className="text-sm font-medium text-gray-900">Quick Mode</h3>
+              <p className="text-xs text-gray-600">Smart defaults for fast generation</p>
+            </div>
+            <button
+              onClick={() => setQuickMode(!quickMode)}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                quickMode ? 'bg-gold-500' : 'bg-gray-300'
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  quickMode ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
@@ -326,42 +351,45 @@ export function GenerateContentModal({
               <p className="text-xs text-gray-500 mt-1">Voice will match brand settings</p>
             </div>
 
-            {/* Primary Style */}
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-3">
-                Primary Style <span className="text-red-500">*</span>
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                {styles.map((style) => (
-                  <button
-                    key={style.id}
-                    onClick={() => setPrimaryStyle(style.id)}
-                    className={`
-                      p-3 rounded-lg border-2 text-left transition-all
-                      ${
-                        primaryStyle === style.id
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-200 hover:border-gray-300"
-                      }
-                    `}
-                    title={style.description}
-                    disabled={isGenerating}
-                  >
-                    <div className="text-2xl mb-1">{style.icon}</div>
-                    <div className="text-xs font-medium text-gray-900">{style.label}</div>
-                  </button>
-                ))}
+            {/* Primary Style - Only show in Advanced Mode */}
+            {!quickMode && (
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-3">
+                  Primary Style <span className="text-red-500">*</span>
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  {styles.map((style) => (
+                    <button
+                      key={style.id}
+                      onClick={() => setPrimaryStyle(style.id)}
+                      className={`
+                        p-3 rounded-lg border-2 text-left transition-all
+                        ${
+                          primaryStyle === style.id
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-gray-200 hover:border-gray-300"
+                        }
+                      `}
+                      title={style.description}
+                      disabled={isGenerating}
+                    >
+                      <div className="text-2xl mb-1">{style.icon}</div>
+                      <div className="text-xs font-medium text-gray-900">{style.label}</div>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Emotional Tones */}
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-3">
-                Emotional Tone (Select 1-3)
-              </label>
-              <div className="space-y-3">
-                {Object.keys(emotionalTones).map((tone) => (
-                  <div key={tone}>
+            {/* Emotional Tones - Only show in Advanced Mode */}
+            {!quickMode && (
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-3">
+                  Emotional Tone (Select 1-3)
+                </label>
+                <div className="space-y-3">
+                  {Object.keys(emotionalTones).map((tone) => (
+                    <div key={tone}>
                     <div className="flex items-center justify-between mb-1">
                       <label className="text-sm text-gray-700 capitalize">{tone}</label>
                       <span className="text-xs text-gray-500">
@@ -392,17 +420,19 @@ export function GenerateContentModal({
                   </div>
                 ))}
               </div>
-            </div>
+              </div>
+            )}
 
-            {/* Advanced Options */}
-            <div>
-              <button
-                onClick={() => setShowAdvanced(!showAdvanced)}
-                className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700"
-                disabled={isGenerating}
-              >
-                {showAdvanced ? "▼" : "▶"} Advanced Options
-              </button>
+            {/* Advanced Options - Hide in Quick Mode */}
+            {!quickMode && (
+              <div>
+                <button
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700"
+                  disabled={isGenerating}
+                >
+                  {showAdvanced ? "▼" : "▶"} Advanced Options
+                </button>
 
               {showAdvanced && (
                 <div className="mt-4 space-y-4 pl-4 border-l-2 border-gray-200">
@@ -481,7 +511,8 @@ export function GenerateContentModal({
                   </div>
                 </div>
               )}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* Center Column - Platform Selection */}

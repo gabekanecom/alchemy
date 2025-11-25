@@ -22,7 +22,16 @@ export default function ContentEditPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [content, setContent] = useState<any>(null);
-  const [showPreview, setShowPreview] = useState(false);
+
+  // Load preview state from localStorage
+  const [showPreview, setShowPreview] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('alchemy_editor_show_preview');
+      return saved === 'true';
+    }
+    return false;
+  });
+
   const [showPublishModal, setShowPublishModal] = useState(false);
 
   // Form state
@@ -39,6 +48,13 @@ export default function ContentEditPage() {
   useEffect(() => {
     fetchContent();
   }, [contentId]);
+
+  // Persist preview state
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('alchemy_editor_show_preview', showPreview.toString());
+    }
+  }, [showPreview]);
 
   async function fetchContent() {
     setLoading(true);
