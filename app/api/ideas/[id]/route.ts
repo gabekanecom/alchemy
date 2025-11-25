@@ -17,8 +17,9 @@ const getUserId = () => "temp-user-id";
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const userId = getUserId();
     const { searchParams } = new URL(request.url);
@@ -26,9 +27,9 @@ export async function GET(
 
     let idea;
     if (includeBrand) {
-      idea = await getIdeaWithBrand(params.id, userId);
+      idea = await getIdeaWithBrand(id, userId);
     } else {
-      idea = await getIdeaById(params.id, userId);
+      idea = await getIdeaById(id, userId);
     }
 
     if (!idea) {
@@ -50,7 +51,7 @@ export async function GET(
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error(`GET /api/ideas/${params.id} error:`, error);
+    console.error(`GET /api/ideas/${id} error:`, error);
 
     const errorResponse: ApiError = {
       success: false,
@@ -70,8 +71,9 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const userId = getUserId();
     const body = await request.json();
@@ -91,7 +93,7 @@ export async function PATCH(
       return NextResponse.json(errorResponse, { status: 400 });
     }
 
-    const idea = await updateIdea(params.id, userId, validation.data);
+    const idea = await updateIdea(id, userId, validation.data);
 
     const response: ApiResponse<typeof idea> = {
       success: true,
@@ -100,7 +102,7 @@ export async function PATCH(
 
     return NextResponse.json(response);
   } catch (error: any) {
-    console.error(`PATCH /api/ideas/${params.id} error:`, error);
+    console.error(`PATCH /api/ideas/${id} error:`, error);
 
     // Handle not found
     if (error.code === "P2025") {
@@ -133,12 +135,13 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const userId = getUserId();
 
-    await deleteIdea(params.id, userId);
+    await deleteIdea(id, userId);
 
     const response: ApiResponse<null> = {
       success: true,
@@ -147,7 +150,7 @@ export async function DELETE(
 
     return NextResponse.json(response);
   } catch (error: any) {
-    console.error(`DELETE /api/ideas/${params.id} error:`, error);
+    console.error(`DELETE /api/ideas/${id} error:`, error);
 
     // Handle not found
     if (error.code === "P2025") {

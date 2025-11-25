@@ -17,18 +17,19 @@ const getUserId = () => "temp-user-id";
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const userId = getUserId();
     const { searchParams } = new URL(request.url);
     const includeStats = searchParams.get("includeStats") === "true";
 
     let brand;
     if (includeStats) {
-      brand = await getBrandWithStats(params.id, userId);
+      brand = await getBrandWithStats(id, userId);
     } else {
-      brand = await getBrandById(params.id, userId);
+      brand = await getBrandById(id, userId);
     }
 
     if (!brand) {
@@ -50,7 +51,8 @@ export async function GET(
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error(`GET /api/brands/${params.id} error:`, error);
+    const { id } = await params;
+    console.error(`GET /api/brands/${id} error:`, error);
 
     const errorResponse: ApiError = {
       success: false,
@@ -70,9 +72,10 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const userId = getUserId();
     const body = await request.json();
 
@@ -91,7 +94,7 @@ export async function PATCH(
       return NextResponse.json(errorResponse, { status: 400 });
     }
 
-    const brand = await updateBrand(params.id, userId, validation.data);
+    const brand = await updateBrand(id, userId, validation.data);
 
     const response: ApiResponse<typeof brand> = {
       success: true,
@@ -100,7 +103,8 @@ export async function PATCH(
 
     return NextResponse.json(response);
   } catch (error: any) {
-    console.error(`PATCH /api/brands/${params.id} error:`, error);
+    const { id } = await params;
+    console.error(`PATCH /api/brands/${id} error:`, error);
 
     // Handle not found
     if (error.code === "P2025") {
@@ -146,12 +150,13 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const userId = getUserId();
 
-    await deleteBrand(params.id, userId);
+    await deleteBrand(id, userId);
 
     const response: ApiResponse<null> = {
       success: true,
@@ -160,7 +165,8 @@ export async function DELETE(
 
     return NextResponse.json(response);
   } catch (error: any) {
-    console.error(`DELETE /api/brands/${params.id} error:`, error);
+    const { id } = await params;
+    console.error(`DELETE /api/brands/${id} error:`, error);
 
     // Handle not found
     if (error.code === "P2025") {

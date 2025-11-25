@@ -16,8 +16,9 @@ const getUserId = () => "temp-user-id";
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const userId = getUserId();
     const { searchParams } = new URL(request.url);
@@ -25,9 +26,9 @@ export async function GET(
 
     let publication;
     if (includeContent) {
-      publication = await getPublicationWithContent(params.id, userId);
+      publication = await getPublicationWithContent(id, userId);
     } else {
-      publication = await getPublicationById(params.id, userId);
+      publication = await getPublicationById(id, userId);
     }
 
     if (!publication) {
@@ -49,7 +50,7 @@ export async function GET(
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error(`GET /api/publications/${params.id} error:`, error);
+    console.error(`GET /api/publications/${id} error:`, error);
 
     const errorResponse: ApiError = {
       success: false,
@@ -69,13 +70,14 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const userId = getUserId();
     const body = await request.json();
 
-    const publication = await updatePublication(params.id, userId, body);
+    const publication = await updatePublication(id, userId, body);
 
     const response: ApiResponse<typeof publication> = {
       success: true,
@@ -84,7 +86,7 @@ export async function PATCH(
 
     return NextResponse.json(response);
   } catch (error: any) {
-    console.error(`PATCH /api/publications/${params.id} error:`, error);
+    console.error(`PATCH /api/publications/${id} error:`, error);
 
     // Handle not found
     if (error.code === "P2025") {
@@ -117,12 +119,13 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const userId = getUserId();
 
-    await deletePublication(params.id, userId);
+    await deletePublication(id, userId);
 
     const response: ApiResponse<null> = {
       success: true,
@@ -131,7 +134,7 @@ export async function DELETE(
 
     return NextResponse.json(response);
   } catch (error: any) {
-    console.error(`DELETE /api/publications/${params.id} error:`, error);
+    console.error(`DELETE /api/publications/${id} error:`, error);
 
     // Handle not found
     if (error.code === "P2025") {

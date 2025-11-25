@@ -5,8 +5,9 @@ import { integrationManager } from "@/lib/integrations/manager";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const user = await getCurrentUser();
     if (!user) {
@@ -14,7 +15,7 @@ export async function POST(
     }
 
     const { prompt, integrationId, size, quality, style } = await req.json();
-    const contentId = params.id;
+    const contentId = id;
 
     // Get content
     const content = await prisma.generatedContent.findFirst({

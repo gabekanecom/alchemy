@@ -19,8 +19,9 @@ const getUserId = () => "temp-user-id";
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const userId = getUserId();
     const { searchParams } = new URL(request.url);
@@ -29,9 +30,9 @@ export async function GET(
 
     let content;
     if (includeBrand) {
-      content = await getContentWithBrand(params.id, userId);
+      content = await getContentWithBrand(id, userId);
     } else {
-      content = await getGeneratedContentById(params.id, userId);
+      content = await getGeneratedContentById(id, userId);
     }
 
     if (!content) {
@@ -49,7 +50,7 @@ export async function GET(
     // Include versions if requested
     let versions;
     if (includeVersions) {
-      versions = await getContentVersions(params.id, userId);
+      versions = await getContentVersions(id, userId);
     }
 
     const response: ApiResponse<typeof content> = {
@@ -60,7 +61,7 @@ export async function GET(
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error(`GET /api/content/${params.id} error:`, error);
+    console.error(`GET /api/content/${id} error:`, error);
 
     const errorResponse: ApiError = {
       success: false,
@@ -80,8 +81,9 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const userId = getUserId();
     const body = await request.json();
@@ -102,7 +104,7 @@ export async function PATCH(
     }
 
     const content = await updateGeneratedContent(
-      params.id,
+      id,
       userId,
       validation.data
     );
@@ -114,7 +116,7 @@ export async function PATCH(
 
     return NextResponse.json(response);
   } catch (error: any) {
-    console.error(`PATCH /api/content/${params.id} error:`, error);
+    console.error(`PATCH /api/content/${id} error:`, error);
 
     // Handle not found
     if (error.code === "P2025") {
@@ -147,12 +149,13 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const userId = getUserId();
 
-    await deleteGeneratedContent(params.id, userId);
+    await deleteGeneratedContent(id, userId);
 
     const response: ApiResponse<null> = {
       success: true,
@@ -161,7 +164,7 @@ export async function DELETE(
 
     return NextResponse.json(response);
   } catch (error: any) {
-    console.error(`DELETE /api/content/${params.id} error:`, error);
+    console.error(`DELETE /api/content/${id} error:`, error);
 
     // Handle not found
     if (error.code === "P2025") {
@@ -194,8 +197,9 @@ export async function DELETE(
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const userId = getUserId();
     const body = await request.json();
@@ -216,7 +220,7 @@ export async function POST(
     }
 
     const newVersion = await createContentVersion(
-      params.id,
+      id,
       userId,
       validation.data
     );
@@ -228,7 +232,7 @@ export async function POST(
 
     return NextResponse.json(response, { status: 201 });
   } catch (error: any) {
-    console.error(`POST /api/content/${params.id}/versions error:`, error);
+    console.error(`POST /api/content/${id}/versions error:`, error);
 
     const errorResponse: ApiError = {
       success: false,

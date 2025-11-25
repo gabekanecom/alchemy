@@ -118,7 +118,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("GET /api/analytics error:", error);
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
 
     // Basic validation
     if (!body.platform || !body.metricType || body.value === undefined) {
-      const errorResponse: ApiError = {
+      const errorResponse: ApiResponse<never> = {
         success: false,
         error: {
           code: "VALIDATION_ERROR",
@@ -163,7 +163,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error("POST /api/analytics error:", error);
 
-    const errorResponse: ApiError = {
+    const errorResponse: ApiResponse<never> = {
       success: false,
       error: {
         code: "INTERNAL_ERROR",

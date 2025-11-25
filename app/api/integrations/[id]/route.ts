@@ -10,7 +10,8 @@ import { getProvider } from "@/lib/integrations/registry";
 /**
  * GET /api/integrations/[id]
  */
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const user = await getCurrentUser();
 
   if (!user) {
@@ -19,7 +20,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
   const integration = await prisma.integration.findFirst({
     where: {
-      id: params.id,
+      id: id,
       userId: user.id,
     },
   });
@@ -34,7 +35,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 /**
  * PATCH /api/integrations/[id]
  */
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const user = await getCurrentUser();
 
   if (!user) {
@@ -48,7 +50,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     // Verify ownership
     const existing = await prisma.integration.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: user.id,
       },
     });
@@ -83,7 +85,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
     // Update integration
     const integration = await prisma.integration.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         ...(config && { config: validatedConfig }),
         ...(enabled !== undefined && { enabled }),
@@ -121,7 +123,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 /**
  * DELETE /api/integrations/[id]
  */
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const user = await getCurrentUser();
 
   if (!user) {
@@ -131,7 +134,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
   // Verify ownership
   const integration = await prisma.integration.findFirst({
     where: {
-      id: params.id,
+      id: id,
       userId: user.id,
     },
   });
@@ -142,7 +145,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
 
   // Delete integration
   await prisma.integration.delete({
-    where: { id: params.id },
+    where: { id: id },
   });
 
   return NextResponse.json({ success: true });

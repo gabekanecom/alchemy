@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
         ...scoreAccuracy,
         { predicted: 0, actual: 0, accuracy: 85 },
       ],
-      scoreTrend: [],
+      scoreTrend: [] as any,
     };
 
     // Generate score trend

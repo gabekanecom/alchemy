@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
           avgCost: 0.03,
         },
       ],
-      trend: [],
+      trend: [] as Array<{ date: string; requests: number; tokens: number }>,
     };
 
     // Generate trend data

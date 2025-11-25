@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     // Mock data for cost tracking
     const data = {
       totalCost: 142.35,
-      trend: 15.2,
+      trendPercent: 15.2,
       budgetUsage: 71,
       byProvider: [
         { name: "Anthropic", value: 85.20 },
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
         { name: "LifestyleCo", cost: 42.35, pieces: 98 },
         { name: "FitnessPro", cost: 21.50, pieces: 67 },
       ],
-      trend: [],
+      trend: [] as Array<{ date: string; cost: number }>,
     };
 
     // Generate cost trend data
