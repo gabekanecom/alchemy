@@ -79,9 +79,27 @@ const config: Config = {
         },
       },
       backgroundImage: {
-        "gradient-gold": "linear-gradient(135deg, #FFB800 0%, #FFA000 50%, #FF8C00 100%)",
+        // Primary gold gradients
+        "gradient-gold": "linear-gradient(135deg, #FFD133 0%, #FFB800 50%, #FFA000 100%)",
+        "gradient-gold-vertical": "linear-gradient(180deg, #FFD133 0%, #FFB800 50%, #FFA000 100%)",
+        "gradient-gold-horizontal": "linear-gradient(90deg, #FFD133 0%, #FFB800 50%, #FFA000 100%)",
+
+        // Rich gold (darker tones)
+        "gradient-gold-rich": "linear-gradient(135deg, #FFB800 0%, #FFA000 50%, #FF8C00 100%)",
+
+        // Light gold (for backgrounds)
+        "gradient-gold-light": "linear-gradient(135deg, #FFF9E6 0%, #FFE699 50%, #FFD133 100%)",
+
+        // Subtle overlays
         "gradient-gold-subtle": "linear-gradient(180deg, rgba(255, 184, 0, 0.05) 0%, transparent 100%)",
+        "gradient-gold-overlay": "linear-gradient(180deg, transparent 0%, rgba(255, 184, 0, 0.1) 100%)",
+
+        // Radial effects
         "gradient-gold-radial": "radial-gradient(circle, rgba(255, 184, 0, 0.15) 0%, transparent 70%)",
+        "gradient-gold-glow": "radial-gradient(ellipse at center, rgba(255, 211, 51, 0.3) 0%, rgba(255, 184, 0, 0.1) 50%, transparent 100%)",
+
+        // Special effects
+        "gradient-gold-shimmer": "linear-gradient(135deg, #FFE699 0%, #FFD133 25%, #FFB800 50%, #FFA000 75%, #FF8C00 100%)",
       },
       boxShadow: {
         "gold-sm": "0 0 10px rgba(255, 184, 0, 0.2)",

@@ -53,6 +53,50 @@ This guide provides a simple find-and-replace mapping to convert components from
 | `bg-purple-500/20 text-purple-400` | `bg-purple-50 text-purple-700 border-purple-200` | Processing |
 | `bg-amber-500/20 text-amber-400` | `bg-amber-50 text-amber-700 border-amber-200` | Warning |
 
+### Gold Gradients & Effects
+
+**Primary Gradients:**
+- `bg-gradient-gold` - Diagonal gradient (light → medium → deep gold)
+- `bg-gradient-gold-vertical` - Top-to-bottom gradient
+- `bg-gradient-gold-horizontal` - Left-to-right gradient
+- `bg-gradient-gold-rich` - Darker, richer gold tones
+- `bg-gradient-gold-light` - Subtle light gold background
+- `bg-gradient-gold-shimmer` - Multi-tone shimmer effect with 5 gold shades
+
+**Overlays & Effects:**
+- `bg-gradient-gold-subtle` - Subtle fade overlay (5% opacity)
+- `bg-gradient-gold-overlay` - Bottom fade overlay (10% opacity)
+- `bg-gradient-gold-radial` - Circular glow from center
+- `bg-gradient-gold-glow` - Elliptical glow effect
+
+**Gold Shadows:**
+- `shadow-gold-sm` - Small gold glow (10px)
+- `shadow-gold-md` - Medium gold glow (20px)
+- `shadow-gold-lg` - Large gold glow (40px)
+
+**Usage Examples:**
+```tsx
+// Primary CTA with gradient
+<Button className="bg-gradient-gold text-black hover:bg-gradient-gold-rich">
+  Get Started
+</Button>
+
+// Card with subtle gold background
+<Card className="bg-gradient-gold-light border-gold-200">
+  Premium Content
+</Card>
+
+// Icon with gold glow
+<div className="bg-gradient-gold-radial p-4 rounded-full">
+  <Sparkles className="w-6 h-6 text-gold-600" />
+</div>
+
+// Header with gold accent
+<div className="bg-gradient-gold-vertical text-black p-6">
+  <h1>Alchemy Platform</h1>
+</div>
+```
+
 ## Quick Find & Replace Commands
 
 ### For VSCode / Command Line
