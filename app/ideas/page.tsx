@@ -142,11 +142,11 @@ export default function IdeasPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-display font-bold text-white flex items-center gap-2">
+            <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-2">
               <Lightbulb className="w-8 h-8 text-gold-500" />
               Content Ideas
             </h1>
-            <p className="text-grey-200 mt-1">
+            <p className="text-gray-700 mt-1">
               Capture, score, and transform ideas into content
             </p>
           </div>
@@ -156,14 +156,14 @@ export default function IdeasPage() {
               onClick={fetchIdeas}
               variant="outline"
               size="sm"
-              className="border-grey-600 hover:border-gold-500"
+              className="border-gray-300 hover:border-gold-500"
             >
               <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
               Refresh
             </Button>
 
             <Link href="/discovery">
-              <Button variant="outline" className="border-grey-600 hover:border-gold-500">
+              <Button variant="outline" className="border-gray-300 hover:border-gold-500">
                 <Sparkles className="w-4 h-4 mr-2" />
                 Discover Ideas
               </Button>
@@ -179,17 +179,17 @@ export default function IdeasPage() {
         </div>
 
         {/* Filters */}
-        <Card className="bg-grey-850 border-grey-600">
+        <Card className="bg-gray-50 border-gray-300">
           <CardContent className="p-4">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               {/* Search */}
               <div className="md:col-span-2 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-grey-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
                 <Input
                   placeholder="Search ideas..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-grey-900 border-grey-600 text-white"
+                  className="pl-10 bg-white border-gray-300 text-gray-900"
                 />
               </div>
 
@@ -198,7 +198,7 @@ export default function IdeasPage() {
                 value={filters.source}
                 onValueChange={(v) => setFilters({ ...filters, source: v })}
               >
-                <SelectTrigger className="bg-grey-900 border-grey-600 text-white">
+                <SelectTrigger className="bg-white border-gray-300 text-gray-900">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -218,7 +218,7 @@ export default function IdeasPage() {
                 value={filters.status}
                 onValueChange={(v) => setFilters({ ...filters, status: v })}
               >
-                <SelectTrigger className="bg-grey-900 border-grey-600 text-white">
+                <SelectTrigger className="bg-white border-gray-300 text-gray-900">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -234,7 +234,7 @@ export default function IdeasPage() {
                 value={filters.sortBy}
                 onValueChange={(v) => setFilters({ ...filters, sortBy: v })}
               >
-                <SelectTrigger className="bg-grey-900 border-grey-600 text-white">
+                <SelectTrigger className="bg-white border-gray-300 text-gray-900">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -252,7 +252,7 @@ export default function IdeasPage() {
           <Card className="bg-gold-500/10 border-gold-500/30">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
-                <p className="text-white font-medium">
+                <p className="text-gray-900 font-medium">
                   {selectedIds.length} idea{selectedIds.length !== 1 ? "s" : ""} selected
                 </p>
                 <div className="flex gap-2">
@@ -266,7 +266,7 @@ export default function IdeasPage() {
                   <Button
                     variant="outline"
                     onClick={handleBulkDelete}
-                    className="border-grey-600 hover:border-red-500"
+                    className="border-gray-300 hover:border-red-500"
                   >
                     <Trash2 className="w-4 h-4 mr-2" />
                     Delete
@@ -274,7 +274,7 @@ export default function IdeasPage() {
                   <Button
                     variant="ghost"
                     onClick={() => setSelectedIds([])}
-                    className="text-grey-300"
+                    className="text-gray-600"
                   >
                     Clear
                   </Button>
@@ -290,10 +290,10 @@ export default function IdeasPage() {
             <Loader2 className="w-8 h-8 animate-spin text-gold-500" />
           </div>
         ) : filteredIdeas.length === 0 ? (
-          <Card className="bg-grey-850 border-grey-600">
+          <Card className="bg-gray-50 border-gray-300">
             <CardContent className="text-center py-12">
-              <Lightbulb className="w-12 h-12 text-grey-400 mx-auto mb-4" />
-              <p className="text-grey-300 mb-4">
+              <Lightbulb className="w-12 h-12 text-gray-500 mx-auto mb-4" />
+              <p className="text-gray-600 mb-4">
                 {ideas.length === 0 ? "No ideas yet" : "No ideas match your filters"}
               </p>
               {ideas.length === 0 && (
@@ -305,7 +305,7 @@ export default function IdeasPage() {
                     </Button>
                   </Link>
                   <Link href="/ideas/new">
-                    <Button variant="outline" className="border-grey-600 hover:border-gold-500">
+                    <Button variant="outline" className="border-gray-300 hover:border-gold-500">
                       <Plus className="w-4 h-4 mr-2" />
                       Add Manual Idea
                     </Button>
@@ -322,14 +322,14 @@ export default function IdeasPage() {
                 checked={selectedIds.length === filteredIdeas.length}
                 onCheckedChange={toggleSelectAll}
               />
-              <span className="text-sm text-grey-400">Select all</span>
+              <span className="text-sm text-gray-500">Select all</span>
             </div>
 
             {/* Ideas Cards */}
             {filteredIdeas.map((idea) => (
               <Card
                 key={idea.id}
-                className={`bg-grey-850 border-grey-600 hover:border-gold-500/50 transition-all ${
+                className={`bg-gray-50 border-gray-300 hover:border-gold-500/50 transition-all ${
                   selectedIds.includes(idea.id) ? "ring-2 ring-gold-500" : ""
                 }`}
               >
@@ -346,20 +346,20 @@ export default function IdeasPage() {
                     {/* Content */}
                     <div className="flex-1">
                       <Link href={`/ideas/${idea.id}`}>
-                        <h3 className="text-lg font-semibold text-white hover:text-gold-400 transition-colors mb-2">
+                        <h3 className="text-lg font-semibold text-gray-900 hover:text-gold-400 transition-colors mb-2">
                           {idea.title}
                         </h3>
                       </Link>
 
                       {idea.description && (
-                        <p className="text-grey-300 text-sm mb-3 line-clamp-2">
+                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
                           {idea.description}
                         </p>
                       )}
 
                       {/* Metadata */}
                       <div className="flex flex-wrap gap-2 mb-3">
-                        <Badge variant="outline" className="bg-grey-900 text-grey-300">
+                        <Badge variant="outline" className="bg-white text-gray-600">
                           {idea.source || "manual"}
                         </Badge>
                         {idea.overallScore && (
@@ -376,13 +376,13 @@ export default function IdeasPage() {
                           {idea.keywords.slice(0, 5).map((keyword: string) => (
                             <span
                               key={keyword}
-                              className="text-xs px-2 py-1 rounded bg-grey-900 text-grey-400 border border-grey-700"
+                              className="text-xs px-2 py-1 rounded bg-white text-gray-500 border border-gray-200"
                             >
                               {keyword}
                             </span>
                           ))}
                           {idea.keywords.length > 5 && (
-                            <span className="text-xs text-grey-500">
+                            <span className="text-xs text-gray-400">
                               +{idea.keywords.length - 5} more
                             </span>
                           )}
@@ -408,7 +408,7 @@ export default function IdeasPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full border-grey-600 hover:border-gold-500"
+                          className="w-full border-gray-300 hover:border-gold-500"
                         >
                           View Details
                         </Button>
