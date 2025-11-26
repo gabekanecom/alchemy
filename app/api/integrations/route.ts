@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Validate config against provider schema
-    const validatedConfig = providerDef.configSchema.parse(config);
+    const validatedConfig = providerDef.configSchema.parse(config) as any;
 
     // If setting as default, unset other defaults in same category
     if (isDefault) {

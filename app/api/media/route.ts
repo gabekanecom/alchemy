@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
     // TODO: Fetch from actual media table when implemented
     // For now, return empty array
-    const images = [];
+    const images: any[] = [];
 
     return NextResponse.json({ images });
   } catch (error) {

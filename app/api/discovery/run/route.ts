@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       data: {
         brandId,
         enabledSources: ["reddit", "youtube", "twitter", "seo", "quora", "firecrawl"],
-        scoringWeights: DEFAULT_SCORING_WEIGHTS,
+        scoringWeights: DEFAULT_SCORING_WEIGHTS as any,
         excludeKeywords: [],
         minScore: 50,
         maxIdeasPerDay: 50,
@@ -66,13 +66,13 @@ export async function POST(req: NextRequest) {
         },
         seoConfig: {
           targetKeywords: ["content marketing", "viral content", "social media strategy"],
-        },
-        quoraConfig: {
-          topics: ["marketing", "content creation"],
-          keywords: ["viral content", "social media", "content marketing"],
-          maxResults: 10,
-          minUpvotes: 50,
-        },
+        } as any,
+        // quoraConfig: {
+        //   topics: ["marketing", "content creation"],
+        //   keywords: ["viral content", "social media", "content marketing"],
+        //   maxResults: 10,
+        //   minUpvotes: 50,
+        // },
         firecrawlConfig: {
           urls: [
             "https://www.hubspot.com/blog",

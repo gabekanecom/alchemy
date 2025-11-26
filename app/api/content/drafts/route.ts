@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const draftsWithWordCount = drafts.map((draft) => ({
+    const draftsWithWordCount = drafts.map((draft: any) => ({
       id: draft.id,
       title: draft.title,
       excerpt: draft.body?.substring(0, 200),

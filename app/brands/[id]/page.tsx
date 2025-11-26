@@ -46,9 +46,9 @@ export default async function BrandDetailPage({
     );
   }
 
-  const brandVoice = brand.brandVoice as any;
-  const targetAudience = brand.targetAudience as any;
-  const contentPreferences = brand.contentPreferences as any;
+  const brandVoice = (brand as any).brandVoice as any;
+  const targetAudience = (brand as any).targetAudience as any;
+  const contentPreferences = (brand as any).contentPreferences as any;
 
   return (
     <AppLayout>
@@ -57,18 +57,18 @@ export default async function BrandDetailPage({
           <div className="flex justify-between items-start mb-6">
             <div>
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-semibold text-gray-900">{brand.name}</h1>
-                {brand.isDefault && <Badge variant="secondary">Default</Badge>}
-                {brand.isActive ? (
+                <h1 className="text-2xl font-semibold text-gray-900">{(brand as any).name}</h1>
+                {(brand as any).isDefault && <Badge variant="secondary">Default</Badge>}
+                {(brand as any).isActive ? (
                   <Badge variant="success">Active</Badge>
                 ) : (
                   <Badge variant="secondary">Inactive</Badge>
                 )}
               </div>
-              <p className="mt-1 text-sm text-gray-500">@{brand.slug}</p>
+              <p className="mt-1 text-sm text-gray-500">@{(brand as any).slug}</p>
             </div>
             <div className="flex gap-2">
-              <Link href={`/brands/${brand.id}/edit`}>
+              <Link href={`/brands/${(brand as any).id}/edit` as any}>
                 <Button>Edit Brand</Button>
               </Link>
             </div>
@@ -84,20 +84,20 @@ export default async function BrandDetailPage({
                   <div>
                     <dt className="text-sm font-medium text-gray-500">Description</dt>
                     <dd className="mt-1 text-sm text-gray-900">
-                      {brand.description || "No description provided"}
+                      {(brand as any).description || "No description provided"}
                     </dd>
                   </div>
-                  {brand.websiteUrl && (
+                  {(brand as any).websiteUrl && (
                     <div>
                       <dt className="text-sm font-medium text-gray-500">Website</dt>
                       <dd className="mt-1 text-sm text-gray-900">
                         <a
-                          href={brand.websiteUrl}
+                          href={(brand as any).websiteUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 hover:underline"
                         >
-                          {brand.websiteUrl}
+                          {(brand as any).websiteUrl}
                         </a>
                       </dd>
                     </div>
@@ -210,7 +210,7 @@ export default async function BrandDetailPage({
                   <CardTitle>Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <Link href={`/ideas/new?brandId=${brand.id}`} className="block">
+                  <Link href={`/ideas/new?brandId=${(brand as any).id}` as any} className="block">
                     <Button variant="outline" className="w-full justify-start">
                       <svg
                         className="mr-2 h-4 w-4"
@@ -228,7 +228,7 @@ export default async function BrandDetailPage({
                       New Idea
                     </Button>
                   </Link>
-                  <Link href={`/content/new?brandId=${brand.id}`} className="block">
+                  <Link href={`/content/new?brandId=${(brand as any).id}` as any} className="block">
                     <Button variant="outline" className="w-full justify-start">
                       <svg
                         className="mr-2 h-4 w-4"

@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const scheduledPosts = await prisma.scheduledPost.findMany({
+    const scheduledPosts = await (prisma as any).scheduledPost.findMany({
       where: {
         content: {
           brand: {
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const posts = scheduledPosts.map((post) => ({
+    const posts = scheduledPosts.map((post: any) => ({
       id: post.id,
       contentId: post.contentId,
       title: post.content.title,

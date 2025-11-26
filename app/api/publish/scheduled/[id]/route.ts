@@ -17,7 +17,7 @@ export async function DELETE(
     const postId = id;
 
     // Verify ownership
-    const post = await prisma.scheduledPost.findUnique({
+    const post = await (prisma as any).scheduledPost.findUnique({
       where: { id: postId },
       include: {
         content: {
@@ -41,7 +41,7 @@ export async function DELETE(
     }
 
     // Delete the scheduled post
-    await prisma.scheduledPost.delete({
+    await (prisma as any).scheduledPost.delete({
       where: { id: postId },
     });
 

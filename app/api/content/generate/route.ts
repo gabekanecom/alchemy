@@ -84,18 +84,18 @@ export async function POST(request: NextRequest) {
             contentType,
             status: "queued",
             progress: 0,
-            generationConfig: generationConfig
+            generationConfig: (generationConfig
               ? {
                   aiModel: generationConfig.aiModel || "claude-sonnet-4.5",
                   temperature: 0.7,
                   maxTokens: 4000,
                   customPrompt: generationConfig.customPrompt || null,
                 }
-              : null,
+              : null) as any,
           },
         });
 
-        // Add job to BullMQ queue
+        // Add job to queue
         const job = await contentQueue.add(
           "generate-content",
           {
@@ -106,25 +106,18 @@ export async function POST(request: NextRequest) {
             platform,
             contentType,
             generationConfig: queueEntry.generationConfig,
-          },
-          {
-            attempts: 3,
-            backoff: {
-              type: "exponential",
-              delay: 2000,
-            },
           }
         );
 
         // Update queue entry with job ID
         await prisma.contentQueue.update({
           where: { id: queueEntry.id },
-          data: { jobId: job.id },
+          data: { jobId: job },
         });
 
         return {
           queueId: queueEntry.id,
-          jobId: job.id,
+          jobId: job,
           platform,
           contentType,
         };

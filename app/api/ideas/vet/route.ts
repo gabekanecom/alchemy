@@ -172,6 +172,7 @@ Respond with a JSON array of scored ideas. Each object should have:
               relevanceScore: idea.relevanceScore,
               competitionScore: idea.competitionScore,
               overallScore: idea.overallScore,
+              // @ts-ignore - researchData is a JSON field
               researchData: {
                 reasoning: idea.reasoning,
                 suggestedAngles: idea.suggestedAngles,

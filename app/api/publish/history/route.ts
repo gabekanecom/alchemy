@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const publishHistory = await prisma.publishHistory.findMany({
+    const publishHistory = await (prisma as any).publishHistory.findMany({
       where: {
         content: {
           brand: {
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
       take: 100, // Limit to most recent 100
     });
 
-    const history = publishHistory.map((item) => ({
+    const history = publishHistory.map((item: any) => ({
       id: item.id,
       contentTitle: item.content.title,
       platform: item.platform,

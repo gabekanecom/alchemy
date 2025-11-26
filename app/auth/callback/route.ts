@@ -9,7 +9,7 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient();
-    const { error, data } = await supabase.auth.exchangeCodeForSession(code);
+    const { error, data } = await supabase!.auth.exchangeCodeForSession(code);
 
     if (!error && data.user) {
       // Sync user to local database

@@ -64,7 +64,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (config) {
       const providerDef = getProvider(existing.provider);
       if (providerDef) {
-        validatedConfig = providerDef.configSchema.parse(config);
+        validatedConfig = providerDef.configSchema.parse(config) as any;
       }
     }
 

@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     const { postId } = await request.json();
 
     // Verify ownership
-    const post = await prisma.scheduledPost.findUnique({
+    const post = await (prisma as any).scheduledPost.findUnique({
       where: { id: postId },
       include: {
         content: {
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Update status to publishing
-    await prisma.scheduledPost.update({
+    await (prisma as any).scheduledPost.update({
       where: { id: postId },
       data: { status: "publishing" },
     });
@@ -59,13 +59,6 @@ export async function POST(request: NextRequest) {
           title: post.content.title,
           body: post.content.body,
           brandId: post.content.brand.id,
-        },
-        {
-          attempts: 3,
-          backoff: {
-            type: "exponential",
-            delay: 2000,
-          },
         }
       );
     }

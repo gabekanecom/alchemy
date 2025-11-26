@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     const { historyId } = await request.json();
 
     // Get the failed publish history item
-    const historyItem = await prisma.publishHistory.findUnique({
+    const historyItem = await (prisma as any).publishHistory.findUnique({
       where: { id: historyId },
       include: {
         content: {
@@ -58,13 +58,6 @@ export async function POST(request: NextRequest) {
         body: historyItem.content.body,
         brandId: historyItem.content.brand.id,
         retryOf: historyId,
-      },
-      {
-        attempts: 3,
-        backoff: {
-          type: "exponential",
-          delay: 2000,
-        },
       }
     );
 

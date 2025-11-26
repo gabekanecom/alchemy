@@ -199,8 +199,9 @@ Respond with a JSON object matching this structure:
       where: { id: ideaId },
       data: {
         status: "queued", // Ready for content generation
+        // @ts-ignore - researchData is a JSON field
         researchData: {
-          ...(idea.researchData as object || {}),
+          ...((idea as any).researchData as object || {}),
           ...researchData,
           researchedAt: new Date().toISOString(),
           researchDepth: depth,

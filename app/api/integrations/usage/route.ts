@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Get usage records
-    const usageRecords = await prisma.integrationUsage.findMany({
+    const usageRecords = await (prisma.integrationUsage.findMany as any)({
       where: whereClause,
       include: {
         integration: {
@@ -62,14 +62,14 @@ export async function GET(req: NextRequest) {
     });
 
     // Calculate summary statistics
-    const totalCost = usageRecords.reduce((sum, record) => sum + record.cost, 0);
-    const totalUnits = usageRecords.reduce((sum, record) => sum + record.unitsUsed, 0);
+    const totalCost = usageRecords.reduce((sum: number, record: any) => sum + record.cost, 0);
+    const totalUnits = usageRecords.reduce((sum: number, record: any) => sum + record.unitsUsed, 0);
     const totalOperations = usageRecords.length;
-    const successfulOperations = usageRecords.filter((r) => r.success).length;
+    const successfulOperations = usageRecords.filter((r: any) => r.success).length;
     const successRate = totalOperations > 0 ? (successfulOperations / totalOperations) * 100 : 0;
 
     // Group by integration
-    const byIntegration = usageRecords.reduce((acc, record) => {
+    const byIntegration = usageRecords.reduce((acc: any, record: any) => {
       const key = record.integrationId;
       if (!acc[key]) {
         acc[key] = {
@@ -88,7 +88,7 @@ export async function GET(req: NextRequest) {
     }, {} as Record<string, any>);
 
     // Group by date for timeline
-    const byDate = usageRecords.reduce((acc, record) => {
+    const byDate = usageRecords.reduce((acc: any, record: any) => {
       const dateKey = record.createdAt.toISOString().split("T")[0];
       if (!acc[dateKey]) {
         acc[dateKey] = {
@@ -109,7 +109,7 @@ export async function GET(req: NextRequest) {
     );
 
     // Group by operation type
-    const byOperation = usageRecords.reduce((acc, record) => {
+    const byOperation = usageRecords.reduce((acc: any, record: any) => {
       const key = record.operation;
       if (!acc[key]) {
         acc[key] = {
@@ -131,7 +131,7 @@ export async function GET(req: NextRequest) {
       .slice(0, 5);
 
     // Get recent activity
-    const recentActivity = usageRecords.slice(0, 20).map((record) => ({
+    const recentActivity = usageRecords.slice(0, 20).map((record: any) => ({
       id: record.id,
       integration: record.integration,
       operation: record.operation,
