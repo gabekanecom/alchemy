@@ -131,9 +131,9 @@ export async function GET(req: NextRequest) {
       queuedContent,
       unpublishedContent: generatedContent,
       summary: {
-        totalScheduled: publications.filter((p) => p.status === "scheduled").length,
-        totalPublished: publications.filter((p) => p.status === "published").length,
-        totalFailed: publications.filter((p) => p.status === "failed").length,
+        totalScheduled: publications.filter((p: any) => p.status === "scheduled").length,
+        totalPublished: publications.filter((p: any) => p.status === "published").length,
+        totalFailed: publications.filter((p: any) => p.status === "failed").length,
         inQueue: queuedContent.length,
         unpublished: generatedContent.length,
       },
